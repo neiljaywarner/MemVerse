@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Base64;
 import android.util.Log;
 
-import com.spiritflightapps.memverse.BuildConfig;
 import com.spiritflightapps.memverse.utils.Prefs;
 
 import java.io.UnsupportedEncodingException;
@@ -28,9 +27,11 @@ public class TwitterAuthUtils {
      * @return Credentials that can be sent to https://api.twitter.com/oauth2/token
      */
     public static String generateEncodedBearerTokenCredentials() {
-        String consumerSecret = BuildConfig.NJW_MV_API_SECRET;
-        String consumerKey = BuildConfig.NJW_MV_API_KEY;
-
+        //String consumerSecret = BuildConfig.NJW_MV_API_SECRET;
+        //String consumerKey = BuildConfig.NJW_MV_API_KEY;
+        String consumerSecret = "";
+        String consumerKey = "";
+        // TODO: Restore these when gradle.properties is fixed for all collaborators
         try {
             consumerSecret = URLEncoder.encode(consumerSecret, "UTF-8");
             consumerKey = URLEncoder.encode(consumerKey, "UTF-8");
