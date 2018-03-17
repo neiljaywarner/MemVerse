@@ -68,7 +68,7 @@ public class ServiceGenerator {
      * @param credentials
      * @return
      */
-    public static TwitterApi createBearerKeyService(String credentials) {
+    public static MemverseApi createBearerKeyService(String credentials) {
 
         final String basic = "Basic " + credentials;
         if (BuildConfig.DEBUG) {
@@ -102,6 +102,6 @@ public class ServiceGenerator {
 
         Retrofit retrofit = builder.client(client).build();
 
-        return retrofit.create(TwitterApi.class);
+        return retrofit.create(MemverseApi.class);
     }
 }

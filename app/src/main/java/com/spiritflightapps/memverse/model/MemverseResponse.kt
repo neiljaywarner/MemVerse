@@ -1,7 +1,23 @@
-package com.neiljaywarner.twitteruserstatus.model
+package com.spiritflightapps.memverse.model
+
+import com.google.gson.annotations.SerializedName
 
 
-data class MemverseResponse(val count: Int = 2)
+data class MemverseResponse(val count: Int = 0,
+
+                            @SerializedName("response")
+                            val verses: List<Memverse>)
+
+
+data class Memverse(val translation: String = "",
+
+                    @SerializedName("verse")
+                    val verse: Verse = Verse(),
+
+                    val ref: String = "",
+                    val status: String = "")
+
+data class Verse(val text: String = "")
 
 
 /*

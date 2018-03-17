@@ -1,6 +1,7 @@
 package com.spiritflightapps.memverse.network;
 
-import com.neiljaywarner.twitteruserstatus.model.MemverseResponse;
+
+import com.spiritflightapps.memverse.model.MemverseResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -13,7 +14,7 @@ import retrofit2.http.POST;
  * Created by neil on 1/15/17.
  */
 
-public interface TwitterApi {
+public interface MemverseApi {
 
 
     String GRANT_TYPE_CLIENT = "client_credentials";
@@ -34,7 +35,7 @@ public interface TwitterApi {
     // https://www.memverse.com/api/index.html#!/memverse/showMemverses
     // e.g. https://www.memverse.com/1/memverses?page=1
     @GET("1/memverses?page=1&sort=id")
-    Call<MemverseResponse> getMemverses();
+    Call<MemverseResponse> fetchMemverses();
 
 
     // Note for memverse API: /oauth only endpoint with no 1/ in it.
