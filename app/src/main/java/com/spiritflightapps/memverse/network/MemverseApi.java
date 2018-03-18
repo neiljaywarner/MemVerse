@@ -34,8 +34,10 @@ public interface MemverseApi {
 
     // https://www.memverse.com/api/index.html#!/memverse/showMemverses
     // e.g. https://www.memverse.com/1/memverses?page=1
-    @GET("1/memverses?page=1&sort=id")
+    @GET("1/memverses?page=1&sort=status")
     Call<MemverseResponse> fetchMemverses();
+    // e.g. Learning, Memorized, Pending order.. hopefully... so pending is end of page 1 or not on page 1.
+    // 100 per page = plenty for mobile
 
 
     // Note for memverse API: /oauth only endpoint with no 1/ in it.

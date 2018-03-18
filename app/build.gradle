@@ -23,8 +23,7 @@ android {
 
     buildTypes.each {
 
-        // *** TODO: RESTORE THESE ASAP
-        /*
+
         it.buildConfigField 'String', 'NJW_MV_API_KEY', MyMemverseApiKey
         it.buildConfigField 'String', 'NJW_MV_API_SECRET', MyMemverseApiSecret
 
@@ -34,7 +33,7 @@ android {
 
         it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_ID', MemverseLargeAccountUserId
         it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_PW', MemverseLargeAccountPassword
-        */
+
 
 
         //TODO: Note: IN production these would probably be configured to use Jenkins

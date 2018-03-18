@@ -8,7 +8,8 @@ import android.widget.Toast
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
-import com.spiritflightapps.memverse.network.*
+import com.spiritflightapps.memverse.network.MemverseApi
+import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,32 +21,38 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        // TODO: Save bearer token, but they never expire, so get a strategy, and get encryption
-        retrieveBearerToken()
+        // TODO: maybe Save bearer token, but they never expire, so get a strategy, and get encryption
         // TODO: Spinner
-
+        makeGetMemversesNetworkCall()
     }
 
-    //private void updateUi(
+    lateinit var memverses: List<Memverse>
+    var currentVerseIndex = 0
+
     private fun updateUi(memverseResponse: MemverseResponse) {
         title = "${memverseResponse.count} verses"
-        val memVerse: Memverse = memverseResponse.verses.first { it.status != "Pending" }
-
+        // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
+        // TODO: Fix the sort date, i don't think it's quite right
+        memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
-        with(memVerse) {
-            edit_verse_text.setText(memVerse.verse.text)
-            text_reference.text = ref
-        }
+        updateVerseUi(memverses.first())
 
 
     }
 
-    private fun makeGetMemversesNetworkCall(authToken: String) {
+    fun updateVerseUi(memverse: Memverse) {
+        with(memverse) {
+            edit_verse_text.setText(verse.text)
+            text_reference.text = ref
+        }
+    }
+
+    // TODO: Change to page number later to support those with > 100 verses?
+    private fun makeGetMemversesNetworkCall() {
         Log.d(TAG, "***** makeGetMemversesNetworkCall")
 
         // TODO: Handle auth token in a better way
-        val memVersesApi = ServiceGenerator.createService(MemverseApi::class.java, authToken)
+        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.fetchMemverses()
 
@@ -81,41 +88,7 @@ class MainActivity : AppCompatActivity() {
     fun showNetworkErrorToast() =
             Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
 
-    private fun retrieveBearerToken() {
-        Log.d(TAG, "*** Retrieving bearer token.")
-        val twitterApi = ServiceGenerator.createBearerKeyService(
-                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
 
-        val passwordTokenRequest = PasswordTokenRequest()
-        val bearerTokenCall = twitterApi.getBearerToken(passwordTokenRequest)
-        // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
-
-        // also consider https://github.com/openid/AppAuth-Android
-        // also consider https://github.com/auth0/Auth0.Android
-
-
-        bearerTokenCall.enqueue(object : Callback<BearerTokenResponse> {
-            override fun onResponse(call: Call<BearerTokenResponse>, response: Response<BearerTokenResponse>) {
-                Log.d(TAG, "bearerTokenCall:Response code: ${response.code()}")
-                if (response.code() == 200) {
-                    val bearerTokenResponse = response.body()
-
-                    Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
-                    makeGetMemversesNetworkCall(bearerTokenResponse.accessToken)
-
-
-                } else {
-                    Log.e(TAG, "Response invalid, check consumer key/secret combination if 403")
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
-                Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
-            }
-        })
-    }
 
     companion object {
 

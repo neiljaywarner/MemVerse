@@ -1,6 +1,8 @@
 package com.spiritflightapps.memverse.model
 
 import com.google.gson.annotations.SerializedName
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 data class MemverseResponse(val count: Int = 0,
@@ -15,7 +17,16 @@ data class Memverse(val translation: String = "",
                     val verse: Verse = Verse(),
 
                     val ref: String = "",
-                    val status: String = "")
+                    val status: String = "",
+                    val next_test: String = "") {
+
+    val nextTestDate: Date
+        get() {
+            // yyyy-MM-dd
+            val format = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            return format.parse(next_test)
+        }
+}
 
 data class Verse(val text: String = "")
 
