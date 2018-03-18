@@ -161,8 +161,6 @@ class LoginActivity : AppCompatActivity() {
         return password.length > 4
     }
 
-    // ** NOTE : This was from Android Studio template
-
     /**
      * Shows the progress UI and hides the login form.
      */
