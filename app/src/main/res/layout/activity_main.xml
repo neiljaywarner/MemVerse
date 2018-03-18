@@ -8,15 +8,35 @@
 
     <TextView
         android:id="@+id/text_reference"
-        android:text="col 1:17"
+        tools:text="col 1:17"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/edit_verse_text"
-        android:text="He is before all things, and in him all things hold together"
+        tools:text="He is before all things, and in him all things hold together"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:id="@+id/text_verse_text"
+        tools:text="He is before all things, and in him all things hold together"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button_next"
+        android:text="Next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/button_show"
+        android:text="Show"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 
     <!-- naming conventions from https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#232-resources-naming -->
 

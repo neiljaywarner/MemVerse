@@ -21,6 +21,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
     // https://www.memverse.com/oauth/token
     public static final String API_BASE_URL = "https://www.memverse.com/";
+    private static String sPasswordAuthToken = "";
+
+    public static void setPasswordAuthToken(String passwordAuthToken) {
+        sPasswordAuthToken = passwordAuthToken;
+    }
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -31,6 +36,10 @@ public class ServiceGenerator {
 
     public static <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, null);
+    }
+
+    public static <S> S createPasswordAuthService(Class<S> serviceClass) {
+        return createService(serviceClass, sPasswordAuthToken);
     }
 
     public static <S> S createService(Class<S> serviceClass, final String authToken) {

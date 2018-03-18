@@ -3,22 +3,36 @@ package com.spiritflightapps.memverse.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
+import android.content.Intent
 
 import android.os.Build
 import android.os.Bundle
 
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import com.spiritflightapps.memverse.R
+import com.spiritflightapps.memverse.network.BearerTokenResponse
+import com.spiritflightapps.memverse.network.PasswordTokenRequest
+import com.spiritflightapps.memverse.network.ServiceGenerator
+import com.spiritflightapps.memverse.network.TwitterAuthUtils
 import kotlinx.android.synthetic.main.activity_login.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A login screen that offers login via email/password.
  */
+
 class LoginActivity : AppCompatActivity() {
+    companion object {
+        private val TAG = LoginActivity::class.java.simpleName
+    }
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -37,7 +51,7 @@ class LoginActivity : AppCompatActivity() {
             false
         })
 
-        email_sign_in_button.setOnClickListener { attemptLogin() }
+        button_signin.setOnClickListener { attemptLogin() }
     }
 
 
@@ -61,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
         var focusView: View? = null
 
         // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(passwordStr) && !isPasswordValid(passwordStr)) {
+        if (!isPasswordValid(passwordStr)) {
             password.error = getString(R.string.error_invalid_password)
             focusView = password
             cancel = true
@@ -87,11 +101,58 @@ class LoginActivity : AppCompatActivity() {
             // perform the user login attempt.
             //showProgress(true)
             // Use this progress when login is going via retrofit call
+            showProgress(true)
+            login(emailStr.trim(), passwordStr)
         }
     }
 
+
+    private fun login(email: String, password: String) {
+        Log.d(TAG, "*** Retrieving bearer token.")
+        val twitterApi = ServiceGenerator.createBearerKeyService(
+                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
+
+        val passwordTokenRequest = PasswordTokenRequest(username = email, password = password)
+        val bearerTokenCall = twitterApi.getBearerToken(passwordTokenRequest)
+        // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
+
+        // also consider https://github.com/openid/AppAuth-Android
+        // also consider https://github.com/auth0/Auth0.Android
+
+
+        bearerTokenCall.enqueue(object : Callback<BearerTokenResponse> {
+            override fun onResponse(call: Call<BearerTokenResponse>, response: Response<BearerTokenResponse>) {
+                Log.d(TAG, "bearerTokenCall:Response code: ${response.code()}")
+                showProgress(false)
+
+                if (response.isSuccessful) {
+                    val bearerTokenResponse = response.body()
+
+                    Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
+                    ServiceGenerator.setPasswordAuthToken(bearerTokenResponse.accessToken)
+                    val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(mainIntent)
+
+
+                } else {
+                    Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
+
+                    Log.e(TAG, "Response invalid, check consumer key/secret combination if 403")
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
+                Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
+                showProgress(false)
+                Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
+
     private fun isEmailValid(email: String): Boolean {
-        //TODO: Replace this with your own logic
+        //TODO: Replace this with your own logic, such as what's build into android pattern
         return email.contains("@")
     }
 
@@ -100,13 +161,12 @@ class LoginActivity : AppCompatActivity() {
         return password.length > 4
     }
 
-    // ** NOTE : This was from Android Studio template
-
     /**
      * Shows the progress UI and hides the login form.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private fun showProgress(show: Boolean) {
+        // TODO: REmove the if and the commetn...
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.

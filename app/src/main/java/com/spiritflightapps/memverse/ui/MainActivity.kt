@@ -3,12 +3,15 @@ package com.spiritflightapps.memverse.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
-import com.spiritflightapps.memverse.network.*
+import com.spiritflightapps.memverse.network.MemverseApi
+import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,32 +23,94 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        // TODO: Save bearer token, but they never expire, so get a strategy, and get encryption
-        retrieveBearerToken()
+        // TODO: maybe Save bearer token, but they never expire, so get a strategy, and get encryption
         // TODO: Spinner
+        makeGetMemversesNetworkCall()
 
-    }
+        setupLiveFeedback()
 
-    //private void updateUi(
-    private fun updateUi(memverseResponse: MemverseResponse) {
-        title = "${memverseResponse.count} verses"
-        val memVerse: Memverse = memverseResponse.verses.first { it.status != "Pending" }
 
-        // TODO: Let them practice...make it a text below they can hide/show when stuck
-        with(memVerse) {
-            edit_verse_text.setText(memVerse.verse.text)
-            text_reference.text = ref
+        button_next.setOnClickListener {
+            edit_verse_text.setText("")
+            edit_verse_text.hint = ""
+            text_verse_text.text = ""
+            currentVerseIndex++
+            updateVerseUi()
+        }
+
+        button_show.setOnClickListener {
+            if (button_show.text == "Show") {
+                text_verse_text.text = currentVerse.verse.text
+                button_show.text = "Hide"
+            } else {
+                text_verse_text.text = ""
+                button_show.text = "Show"
+            }
+
         }
 
 
     }
 
-    private fun makeGetMemversesNetworkCall(authToken: String) {
+    private fun setupLiveFeedback() {
+        // TODO: Refine this; the one online is friendly to semicolons vs periods adn some other stuff
+        edit_verse_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                val enteredString = edit_verse_text.text.toString()
+                if (currentVerse.verse.text.startsWith(enteredString)) {
+                    text_verse_text.text = enteredString
+                }
+
+                if (currentVerse.verse.text.trim() == enteredString.trim()) {
+                    title = "Correct! Good job"
+                    Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // do nothing
+            }
+
+        })
+        // TODO: Kotlin magic to the above
+    }
+
+    lateinit var memverses: List<Memverse>
+    private var currentVerseIndex = 0
+    val currentVerse: Memverse
+        get() = memverses[currentVerseIndex]
+
+    private fun updateUi(memverseResponse: MemverseResponse) {
+        // TODO: Fix count to say something like _ of _ for the number w/o pending, etc
+        title = "${memverseResponse.count} verses"
+        // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
+        // TODO: Fix the sort date, i don't think it's quite right
+        memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
+        // TODO: Let them practice...make it a text below they can hide/show when stuck
+        updateVerseUi()
+
+
+    }
+
+    private fun updateVerseUi() {
+        with(currentVerse) {
+            text_reference.text = ref
+            val oldTitle: String = title.toString()
+            title = "$oldTitle ( $ref ) "
+        }
+    }
+
+    // TODO: Change to page number later to support those with > 100 verses?
+    private fun makeGetMemversesNetworkCall() {
         Log.d(TAG, "***** makeGetMemversesNetworkCall")
 
         // TODO: Handle auth token in a better way
-        val memVersesApi = ServiceGenerator.createService(MemverseApi::class.java, authToken)
+        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.fetchMemverses()
 
@@ -81,41 +146,7 @@ class MainActivity : AppCompatActivity() {
     fun showNetworkErrorToast() =
             Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
 
-    private fun retrieveBearerToken() {
-        Log.d(TAG, "*** Retrieving bearer token.")
-        val twitterApi = ServiceGenerator.createBearerKeyService(
-                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
 
-        val passwordTokenRequest = PasswordTokenRequest()
-        val bearerTokenCall = twitterApi.getBearerToken(passwordTokenRequest)
-        // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
-
-        // also consider https://github.com/openid/AppAuth-Android
-        // also consider https://github.com/auth0/Auth0.Android
-
-
-        bearerTokenCall.enqueue(object : Callback<BearerTokenResponse> {
-            override fun onResponse(call: Call<BearerTokenResponse>, response: Response<BearerTokenResponse>) {
-                Log.d(TAG, "bearerTokenCall:Response code: ${response.code()}")
-                if (response.code() == 200) {
-                    val bearerTokenResponse = response.body()
-
-                    Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
-                    makeGetMemversesNetworkCall(bearerTokenResponse.accessToken)
-
-
-                } else {
-                    Log.e(TAG, "Response invalid, check consumer key/secret combination if 403")
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
-                Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
-            }
-        })
-    }
 
     companion object {
 
