@@ -3,6 +3,8 @@ package com.spiritflightapps.memverse.ui
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
@@ -24,26 +26,82 @@ class MainActivity : AppCompatActivity() {
         // TODO: maybe Save bearer token, but they never expire, so get a strategy, and get encryption
         // TODO: Spinner
         makeGetMemversesNetworkCall()
+
+        setupLiveFeedback()
+
+
+        button_next.setOnClickListener {
+            edit_verse_text.setText("")
+            edit_verse_text.hint = ""
+            text_verse_text.text = ""
+            currentVerseIndex++
+            updateVerseUi()
+        }
+
+        button_show.setOnClickListener {
+            if (button_show.text == "Show") {
+                text_verse_text.text = currentVerse.verse.text
+                button_show.text = "Hide"
+            } else {
+                text_verse_text.text = ""
+                button_show.text = "Show"
+            }
+
+        }
+
+
+    }
+
+    private fun setupLiveFeedback() {
+        // TODO: Refine this; the one online is friendly to semicolons vs periods adn some other stuff
+        edit_verse_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                val enteredString = edit_verse_text.text.toString()
+                if (currentVerse.verse.text.startsWith(enteredString)) {
+                    text_verse_text.text = enteredString
+                }
+
+                if (currentVerse.verse.text.trim() == enteredString.trim()) {
+                    title = "Correct! Good job"
+                    Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
+
+                }
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // do nothing
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // do nothing
+            }
+
+        })
+        // TODO: Kotlin magic to the above
     }
 
     lateinit var memverses: List<Memverse>
-    var currentVerseIndex = 0
+    private var currentVerseIndex = 0
+    val currentVerse: Memverse
+        get() = memverses[currentVerseIndex]
 
     private fun updateUi(memverseResponse: MemverseResponse) {
+        // TODO: Fix count to say something like _ of _ for the number w/o pending, etc
         title = "${memverseResponse.count} verses"
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
         // TODO: Fix the sort date, i don't think it's quite right
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
-        updateVerseUi(memverses.first())
+        updateVerseUi()
 
 
     }
 
-    fun updateVerseUi(memverse: Memverse) {
-        with(memverse) {
-            edit_verse_text.setText(verse.text)
+    private fun updateVerseUi() {
+        with(currentVerse) {
             text_reference.text = ref
+            val oldTitle: String = title.toString()
+            title = "$oldTitle ( $ref ) "
         }
     }
 
