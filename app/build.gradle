@@ -34,8 +34,6 @@ android {
         it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_ID', MemverseLargeAccountUserId
         it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_PW', MemverseLargeAccountPassword
 
-
-
         //TODO: Note: IN production these would probably be configured to use Jenkins
         // but in this case these should match fields in ~/.gradle/gradle.properties
         // b/c these are like passwords and should not be checked into source control or shared.
@@ -53,6 +51,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support:design:27.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
@@ -63,3 +62,5 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
 
 }
+
+apply plugin: 'com.google.gms.google-services'
