@@ -87,7 +87,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUi(memverseResponse: MemverseResponse) {
         // TODO: Fix count to say something like _ of _ for the number w/o pending, etc
-        title = "${memverseResponse.count} verses"
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
         // TODO: Fix the sort date, i don't think it's quite right
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
@@ -100,8 +99,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateVerseUi() {
         with(currentVerse) {
             text_reference.text = ref
-            val oldTitle: String = title.toString()
-            title = "$oldTitle ( $ref ) "
+            title = "$ref ($status)"
         }
     }
 
