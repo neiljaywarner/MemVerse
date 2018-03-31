@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
-        tools:context=".ui.MainActivity">
+    android:background="#C5E1A5"
+    tools:context=".ui.MainActivity">
 
     <TextView
         android:id="@+id/text_reference"
@@ -36,7 +37,8 @@
 
         <Button
             android:id="@+id/button_show"
-            android:background="@color/colorAccent"
+            android:background="#FFF000"
+            android:textStyle="bold"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
 
@@ -46,7 +48,8 @@
 
         <Button
             android:id="@+id/button_next"
-            android:background="@color/colorAccent"
+            android:background="#FFF000"
+            android:textStyle="bold"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
@@ -55,10 +58,7 @@
 
     </RelativeLayout>
 
-<ImageView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background ="@drawable/bible4"
+
 
     />
     <!-- naming conventions from https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#232-resources-naming -->
