@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             edit_verse_text.setText("")
             edit_verse_text.hint = ""
             text_verse_text.text = ""
+            button_show.text = "Show"
             currentVerseIndex++
             updateVerseUi()
         }
