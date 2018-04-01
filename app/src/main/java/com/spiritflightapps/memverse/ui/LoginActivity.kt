@@ -146,6 +146,7 @@ class LoginActivity : AppCompatActivity() {
             override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
                 Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
                 showProgress(false)
+
                 Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
             }
         })
