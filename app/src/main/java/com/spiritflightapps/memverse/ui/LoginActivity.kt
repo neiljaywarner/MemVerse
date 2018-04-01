@@ -7,6 +7,7 @@ import android.content.Intent
 
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -145,8 +146,9 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
                 Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
+
                 showProgress(false)
-                Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
+                Snackbar.make(button_signin, "Can't login with these credentials; please check username/password combination.", Snackbar.LENGTH_LONG).show()
             }
         })
     }

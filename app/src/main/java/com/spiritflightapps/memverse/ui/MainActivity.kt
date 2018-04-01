@@ -17,6 +17,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+const val ARG_CURRENT_VERSE = "arg_current_verse_index"
+
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
             edit_verse_text.setText("")
             edit_verse_text.hint = ""
             text_verse_text.text = ""
+            button_show.text = "Show"
             currentVerseIndex++
             updateVerseUi()
         }
@@ -49,7 +52,13 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-// oops; can't easily amend commit message because already pushed
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(ARG_CURRENT_VERSE, currentVerseIndex)
+        // TODO: Finish this part, parcelize and restore rotation ability.. but who would use this app in landscape? Maybe no one..
+        // still, handling app death would be nice
+        super.onSaveInstanceState(outState)
     }
 
     private fun setupLiveFeedback() {
