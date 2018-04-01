@@ -75,7 +75,7 @@
                 android:layout_marginRight="40dp"
                 android:text="@string/action_sign_in"
                 android:textColor="#F50057"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 android:background="#FFF0"/>
 
