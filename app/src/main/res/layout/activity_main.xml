@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp"
+    android:background="#C5E1A5"
     tools:context=".ui.MainActivity">
 
     <TextView
@@ -25,7 +26,8 @@
         android:id="@+id/text_verse_text"
         tools:text="He is before all things, and in him all things hold together"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
 
     <RelativeLayout
         android:orientation="horizontal"
@@ -35,7 +37,8 @@
 
         <Button
             android:id="@+id/button_show"
-            android:background="@color/colorAccent"
+            android:background="#FFF000"
+            android:textStyle="bold"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
 
@@ -45,7 +48,8 @@
 
         <Button
             android:id="@+id/button_next"
-            android:background="@color/colorAccent"
+            android:background="#FFF000"
+            android:textStyle="bold"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
@@ -55,6 +59,8 @@
     </RelativeLayout>
 
 
+
+    />
     <!-- naming conventions from https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#232-resources-naming -->
 
 </LinearLayout>
