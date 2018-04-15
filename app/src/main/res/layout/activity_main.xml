@@ -1,43 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.MainActivity">
+    tools:context="com.example.android.memverse.MainActivity"
+    android:background="#9CCC65">
 
-    <TextView
-        android:id="@+id/text_reference"
-        tools:text="col 1:17"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+       </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context="com.example.android.memverse.MainActivity"/>
+    <Button
+        android:id="@+id/sign_in"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_margin="50dp"
+        android:text="SIGN IN "
+        android:textStyle="bold" />
+
+    <CheckBox
+        android:id="@+id/remember"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <EditText
-        android:id="@+id/edit_verse_text"
-        tools:text="He is before all things, and in him all things hold together"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-
-    <TextView
-        android:id="@+id/text_verse_text"
-        tools:text="He is before all things, and in him all things hold together"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="117dp"
+        android:text="REMEMBER ME"
+        android:textColor="#6200EA"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="60dp" />
 
     <Button
-        android:id="@+id/button_next"
-        android:text="Next"
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_below="@+id/remember"
+        android:text="REGISTER "
+        android:onClick="open_uri"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/logo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="219dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/memverselogo"
+        android:layout_marginBottom="15dp"/>
 
-    <Button
-        android:id="@+id/button_show"
-        android:text="Show"
+    <ImageView
+        android:id="@+id/bible"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="175dp"
+        android:layout_below="@+id/logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/bible4"/>
+
+    <TextView
+        android:id="@+id/now"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="START MEMORIZING NOW"
+        android:textColor="#6200EA"
+        android:textSize="25dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Psalm 119:11: I have hidden your word in my heart!"
+        android:textSize="12dp"
+        android:textStyle="bold"
+        android:textColor="#000"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
 
-    <!-- naming conventions from https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#232-resources-naming -->
-
-</LinearLayout>
+</RelativeLayout>
