@@ -32,6 +32,8 @@
             </intent-filter>
             -->
         </activity>
+        <activity android:name=".Welcome_Screen" />
+        <activity android:name=".welcome_screen"></activity>
     </application>
 
 </manifest>
