@@ -31,8 +31,9 @@
         android:layout_height="wrap_content"
         android:textStyle="bold"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:orientation="horizontal"
+        android:weightSum="3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -41,28 +42,42 @@
             android:id="@+id/button_show"
             android:background="#FFF000"
             android:textStyle="bold"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:text="Show" />
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/button_prev"
+            android:background="#FFF000"
+            android:textStyle="bold"
+            android:layout_weight="1"
+
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Prev" />
 
         <Button
             android:id="@+id/button_next"
             android:background="#FFF000"
             android:textStyle="bold"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
             android:text="Next" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
-
-    />
     <!-- naming conventions from https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md#232-resources-naming -->
 
 </LinearLayout>

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             button_show.text = "Show"
             currentVerseIndex++
             updateVerseUi()
+            updateButtonUi()
         }
 
         button_show.setOnClickListener {
@@ -101,8 +103,18 @@ class MainActivity : AppCompatActivity() {
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
         updateVerseUi()
+        updateButtonUi()
 
 
+    }
+
+    private fun updateButtonUi() {
+        Log.d("NJWMV", "currentIndex=$currentVerseIndex; lastIndex=${memverses.lastIndex}")
+        if (currentVerseIndex == memverses.lastIndex - 1) {
+            button_next.visibility = View.INVISIBLE
+        } else {
+            button_next.visibility = View.VISIBLE
+        }
     }
 
     private fun updateVerseUi() {

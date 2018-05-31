@@ -4,11 +4,9 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
 import android.content.Intent
-
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
 import android.util.Log
@@ -18,9 +16,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.network.BearerTokenResponse
-import com.spiritflightapps.memverse.network.PasswordTokenRequest
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.network.TwitterAuthUtils
+import com.spiritflightapps.memverse.network.getSmallAccountPasswordTokenRequest
 import kotlinx.android.synthetic.main.activity_login.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -113,7 +111,8 @@ class LoginActivity : AppCompatActivity() {
         val twitterApi = ServiceGenerator.createBearerKeyService(
                 TwitterAuthUtils.generateEncodedBearerTokenCredentials())
 
-        val passwordTokenRequest = PasswordTokenRequest(username = email, password = password)
+        //val passwordTokenRequest = PasswordTokenRequest(username = email, password = password)
+        val passwordTokenRequest = getSmallAccountPasswordTokenRequest()
         val bearerTokenCall = twitterApi.getBearerToken(passwordTokenRequest)
         // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
 
