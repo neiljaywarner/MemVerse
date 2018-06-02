@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             updateUi()
         }
 
+        // TODO: translation; we do have users in other parts of the world.
         button_show.setOnClickListener {
             if (button_show.text == "Show") {
                 text_verse_text.text = currentVerse.verse.text
