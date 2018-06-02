@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
 
 
         button_next.setOnClickListener {
-            edit_verse_text.setText("")
-            edit_verse_text.hint = ""
-            text_verse_text.text = ""
-            button_show.text = "Show"
             currentVerseIndex++
-            updateVerseUi()
-            updateButtonUi()
+            updateUi()
+        }
+
+        button_prev.setOnClickListener {
+            currentVerseIndex--
+            updateUi()
         }
 
         button_show.setOnClickListener {
@@ -54,6 +54,15 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    fun updateUi() {
+        edit_verse_text.setText("")
+        edit_verse_text.hint = ""
+        text_verse_text.text = ""
+        button_show.text = "Show"
+        updateVerseUi()
+        updateButtonUi()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -114,6 +123,12 @@ class MainActivity : AppCompatActivity() {
             button_next.visibility = View.INVISIBLE
         } else {
             button_next.visibility = View.VISIBLE
+        }
+
+        if (currentVerseIndex == 0) {
+            button_prev.visibility = View.INVISIBLE
+        } else {
+            button_prev.visibility = View.VISIBLE
         }
     }
 
