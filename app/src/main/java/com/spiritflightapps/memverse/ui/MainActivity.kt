@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
@@ -33,14 +34,16 @@ class MainActivity : AppCompatActivity() {
 
 
         button_next.setOnClickListener {
-            edit_verse_text.setText("")
-            edit_verse_text.hint = ""
-            text_verse_text.text = ""
-            button_show.text = "Show"
             currentVerseIndex++
-            updateVerseUi()
+            updateUi()
         }
 
+        button_prev.setOnClickListener {
+            currentVerseIndex--
+            updateUi()
+        }
+
+        // TODO: translation; we do have users in other parts of the world.
         button_show.setOnClickListener {
             if (button_show.text == "Show") {
                 text_verse_text.text = currentVerse.verse.text
@@ -52,6 +55,15 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    fun updateUi() {
+        edit_verse_text.setText("")
+        edit_verse_text.hint = ""
+        text_verse_text.text = ""
+        button_show.text = "Show"
+        updateVerseUi()
+        updateButtonUi()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -101,8 +113,24 @@ class MainActivity : AppCompatActivity() {
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
         updateVerseUi()
+        updateButtonUi()
 
 
+    }
+
+    private fun updateButtonUi() {
+        Log.d("NJWMV", "currentIndex=$currentVerseIndex; lastIndex=${memverses.lastIndex}")
+        if (currentVerseIndex == memverses.lastIndex - 1) {
+            button_next.visibility = View.INVISIBLE
+        } else {
+            button_next.visibility = View.VISIBLE
+        }
+
+        if (currentVerseIndex == 0) {
+            button_prev.visibility = View.INVISIBLE
+        } else {
+            button_prev.visibility = View.VISIBLE
+        }
     }
 
     private fun updateVerseUi() {
