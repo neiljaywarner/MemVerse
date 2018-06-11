@@ -62,6 +62,8 @@
             android:layout_height="wrap_content"
             android:text="Prev" />
 
+        <!-- TODO: Change these to material button -->
+        <!-- TODO: Use Android Studio 3.2, androidx instead of support library, etc -->
         <Button
             android:id="@+id/button_next"
             android:background="#FFF000"
