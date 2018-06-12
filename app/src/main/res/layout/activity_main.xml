@@ -8,6 +8,10 @@
     android:background="#C5E1A5"
     tools:context=".ui.MainActivity">
 
+    <!-- TODO: use new materialcardview
+    https://material.io/develop/android/components/material-card-view/
+    -->
+
     <TextView
         android:id="@+id/text_reference"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
