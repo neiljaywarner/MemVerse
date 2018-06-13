@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
@@ -17,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 const val ARG_CURRENT_VERSE = "arg_current_verse_index"
 
@@ -55,6 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+    }
+
+    override
+    fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate menu resource file.
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+
+        // Return true to display menu
+        return true
     }
 
     fun updateUi() {

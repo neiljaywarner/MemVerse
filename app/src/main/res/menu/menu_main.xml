@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TODO: use material design drawable and see if it looks better, and/or tint with better color -->
+    <item
+        android:id="@+id/menu_item_share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/share"
+        android:visible="false"
+        app:showAsAction="always" />
+    <!--TODO: make visible and finish share out feature for v 0.35 -->
+</menu>
