@@ -15,7 +15,7 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 4  // 2 matches 0.1 - Beta, 3 matches 0.2 beta (june 2 2018) 4 matches 0.3-beta
+        versionCode 4  // 2 matches 0.1 - Beta, 3 matches 0.2 beta (june 2 2018) 4 matches 0.3-beta (mid-June 2018)
         versionName "0.3 - Beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

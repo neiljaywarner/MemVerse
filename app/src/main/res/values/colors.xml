@@ -10,11 +10,21 @@
  https://www.materialpalette.com/green/indigo
  -->
     <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
+    <color name="primary_dark">@color/dark_green</color>
     <color name="primary_light">#C8E6C9</color>
-    <color name="accent">#536DFE</color>
+    <color name="accent">@color/dark_green</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#757575</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+
+
+    <!-- from james' specs -->
+
+
+    <!-- login screen buttons, for example -->
+    <color name="medium_green">#6BD13D</color>
+    <color name="dark_green">#5BB507</color>
+    <color name="white">#FFFFFF</color>
+
 </resources>
