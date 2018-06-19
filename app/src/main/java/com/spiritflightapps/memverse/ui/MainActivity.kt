@@ -145,12 +145,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateVerseUi() {
+    private fun updateVerseUi() = try {
         with(currentVerse) {
             text_reference.text = ref
             title = "$ref ($status)"
         }
+    } catch (e: Exception) {
+        // TODO: Log to analytics so we know how often?
+        showNoVersesToast()
     }
+
 
     // TODO: Change to page number later to support those with > 100 verses?
     private fun makeGetMemversesNetworkCall() {
@@ -193,7 +197,8 @@ class MainActivity : AppCompatActivity() {
     fun showNetworkErrorToast() =
             Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
 
-
+    fun showNoVersesToast() =
+            Toast.makeText(this, "Please go to memverse.com and add verses. thanks!", Toast.LENGTH_LONG).show()
 
     companion object {
 

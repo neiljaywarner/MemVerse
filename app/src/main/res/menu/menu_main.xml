@@ -5,9 +5,17 @@
     <!-- TODO: use material design drawable and see if it looks better, and/or tint with better color -->
     <item
         android:id="@+id/menu_item_share"
-        android:icon="@android:drawable/ic_menu_share"
+        android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/share"
-        android:visible="false"
         app:showAsAction="always" />
+
+    <!-- TODO: for june19pm version james' pngs and logout feature here
+    then 1-5, then switch to navdrawre -->
+
+    <item
+        android:id="@+id/menu_item_logout"
+        android:visible="false"
+        android:title="@string/share"
+        app:showAsAction="never" />
     <!--TODO: make visible and finish share out feature for v 0.35 -->
 </menu>

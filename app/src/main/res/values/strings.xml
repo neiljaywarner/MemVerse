@@ -14,5 +14,7 @@
         completions."
     </string>
     <string name="share">Share</string>
+    <string name="logout">Logout</string>
+
     <string name="type_scripture_here">Type the scripture here</string>
 </resources>
