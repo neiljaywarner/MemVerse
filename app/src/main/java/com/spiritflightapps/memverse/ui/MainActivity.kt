@@ -176,7 +176,6 @@ class MainActivity : AppCompatActivity() {
                     } else {
                         updateUi(myVersesResponse)
                     }
-                    //updateList(tweets.getTweetList());
                 } else {
                     //TODO: Could check other response codes or if have network connection
                     Toast.makeText(this@MainActivity, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
@@ -197,7 +196,7 @@ class MainActivity : AppCompatActivity() {
     fun showNetworkErrorToast() =
             Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
 
-    fun showNoVersesToast() =
+    private fun showNoVersesToast() =
             Toast.makeText(this, "Please go to memverse.com and add verses. thanks!", Toast.LENGTH_LONG).show()
 
     companion object {
