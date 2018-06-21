@@ -85,10 +85,12 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_item_share -> {
                 share(currentVerse.toDisplayString())
+                trackShare(currentVerse.ref)
                 return true
             }
             R.id.menu_item_logout -> {
                 logout()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)
@@ -104,6 +106,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun trackLogout() {
         mFirebaseAnalytics.logEvent("logout", Bundle())
+    }
+
+    private fun trackShare(itemName: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
     }
 
     private fun updateUi() {
