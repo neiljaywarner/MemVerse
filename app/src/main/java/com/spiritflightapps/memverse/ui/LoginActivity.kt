@@ -14,13 +14,14 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.network.BearerTokenResponse
 import com.spiritflightapps.memverse.network.PasswordTokenRequest
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.network.TwitterAuthUtils
 import kotlinx.android.synthetic.main.activity_login.*
-import org.jetbrains.anko.defaultSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -37,10 +38,18 @@ class LoginActivity : AppCompatActivity() {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
 
+    // put in baseactivity or mainapplication
+    private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val authToken = defaultSharedPreferences.getString(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
-        if (authToken.isBlank()) {
+
+        //TODO: Move to mainapplication
+        Hawk.init(applicationContext).build()
+
+        val authToken = Hawk.get(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
+        if (authToken.isNotBlank()) {
             ServiceGenerator.setPasswordAuthToken(authToken)
 
             // TODO: newIntent pattern
@@ -139,12 +148,9 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
                     val authToken = bearerTokenResponse.accessToken
                     ServiceGenerator.setPasswordAuthToken(authToken)
-                    ServiceGenerator.AUTH_TOKEN_PREFS_KEY
 
-                    defaultSharedPreferences.edit().apply {
-                        putString(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
-                        apply()
-                    }
+                    Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
+                    trackLogin()
                     val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(mainIntent)
 
@@ -166,6 +172,15 @@ class LoginActivity : AppCompatActivity() {
             }
         })
     }
+
+    private fun trackLogin() {
+        val bundle = Bundle()
+        //todo: use bundleOf in ktx
+        bundle.putString(FirebaseAnalytics.Param.METHOD, "regular")
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
+    }
+
+
 
     private fun isEmailValid(email: String): Boolean {
         //TODO: Replace this with your own logic, such as what's build into android pattern

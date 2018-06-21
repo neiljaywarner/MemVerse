@@ -1,7 +1,6 @@
 package com.spiritflightapps.memverse.ui
 
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
@@ -11,14 +10,16 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.defaultSharedPreferences
 import org.jetbrains.anko.share
+import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,9 +29,15 @@ const val ARG_CURRENT_VERSE = "arg_current_verse_index"
 
 class MainActivity : AppCompatActivity() {
 
+    // put in baseactivity or mainapplication
+    private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //TODO: Move to mainapplication
+        Hawk.init(applicationContext).build()
+
 
         // TODO: maybe Save bearer token, but they never expire, so get a strategy, and get encryption
         // TODO: Spinner
@@ -87,14 +94,19 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private val sharedPreferences: SharedPreferences by lazy { defaultSharedPreferences }
-
     fun logout() {
-        // TODO: Delete token from sharedprefs
-        sharedPreferences.edit().remove(ServiceGenerator.AUTH_TOKEN_PREFS_KEY).apply()
+        Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
+        trackLogout()
+        startActivity<LoginActivity>()
+        //TOOO: organize this a little bit and make sure backstack behaves as expected.
+        finish()
     }
 
-    fun updateUi() {
+    private fun trackLogout() {
+        mFirebaseAnalytics.logEvent("logout", Bundle())
+    }
+
+    private fun updateUi() {
         edit_verse_text.setText("")
         edit_verse_text.hint = ""
         text_verse_text.text = ""
@@ -228,8 +240,7 @@ class MainActivity : AppCompatActivity() {
 
         private val TAG = MainActivity::class.java.simpleName
     }
-    // TODO: Pick kotlin secure sharedprefs to encrypt token
-    // ** it never expires
+
 
 }
 

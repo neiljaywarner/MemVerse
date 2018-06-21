@@ -9,13 +9,12 @@
         android:title="@string/share"
         app:showAsAction="always" />
 
-    <!-- TODO: for june19pm version james' pngs and logout feature here
-    then 1-5, then switch to navdrawre -->
+    <!-- TODO: remove the logout later when it goes in navdrawer -->
+    <!-- TODO: use james' art for login screen logos -->
 
     <item
         android:id="@+id/menu_item_logout"
-        android:visible="false"
-        android:title="@string/share"
+        android:title="@string/logout"
         app:showAsAction="never" />
     <!--TODO: make visible and finish share out feature for v 0.35 -->
 </menu>
