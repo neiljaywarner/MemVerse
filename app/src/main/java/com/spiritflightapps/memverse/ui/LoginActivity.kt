@@ -20,6 +20,7 @@ import com.spiritflightapps.memverse.network.PasswordTokenRequest
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.network.TwitterAuthUtils
 import kotlinx.android.synthetic.main.activity_login.*
+import org.jetbrains.anko.defaultSharedPreferences
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,9 +39,17 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val authToken = defaultSharedPreferences.getString(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
+        if (authToken.isBlank()) {
+            ServiceGenerator.setPasswordAuthToken(authToken)
+
+            // TODO: newIntent pattern
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+            finish()
+            return
+        }
         setContentView(R.layout.activity_login)
-
-
 
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -128,7 +137,14 @@ class LoginActivity : AppCompatActivity() {
                     val bearerTokenResponse = response.body()
 
                     Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
-                    ServiceGenerator.setPasswordAuthToken(bearerTokenResponse.accessToken)
+                    val authToken = bearerTokenResponse.accessToken
+                    ServiceGenerator.setPasswordAuthToken(authToken)
+                    ServiceGenerator.AUTH_TOKEN_PREFS_KEY
+
+                    defaultSharedPreferences.edit().apply {
+                        putString(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
+                        apply()
+                    }
                     val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(mainIntent)
 
@@ -166,38 +182,29 @@ class LoginActivity : AppCompatActivity() {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private fun showProgress(show: Boolean) {
-        // TODO: REmove the if and the commetn...
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-            login_form.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_form.visibility = if (show) View.GONE else View.VISIBLE
-                        }
-                    })
+        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_progress.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-                        }
-                    })
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-        }
+        login_form.visibility = if (show) View.GONE else View.VISIBLE
+        login_form.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 0 else 1).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        login_form.visibility = if (show) View.GONE else View.VISIBLE
+                    }
+                })
+
+        login_progress.visibility = if (show) View.VISIBLE else View.GONE
+        login_progress.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 1 else 0).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        login_progress.visibility = if (show) View.VISIBLE else View.GONE
+                    }
+                })
     }
+
 
 }

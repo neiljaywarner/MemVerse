@@ -1,12 +1,14 @@
 package com.spiritflightapps.memverse.ui
 
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import com.spiritflightapps.memverse.R
@@ -15,6 +17,8 @@ import com.spiritflightapps.memverse.model.MemverseResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.defaultSharedPreferences
+import org.jetbrains.anko.share
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,6 +71,27 @@ class MainActivity : AppCompatActivity() {
 
         // Return true to display menu
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle presses on the action bar menu items
+        when (item.itemId) {
+            R.id.menu_item_share -> {
+                share(currentVerse.toDisplayString())
+                return true
+            }
+            R.id.menu_item_logout -> {
+                logout()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private val sharedPreferences: SharedPreferences by lazy { defaultSharedPreferences }
+
+    fun logout() {
+        // TODO: Delete token from sharedprefs
+        sharedPreferences.edit().remove(ServiceGenerator.AUTH_TOKEN_PREFS_KEY).apply()
     }
 
     fun updateUi() {
@@ -185,7 +210,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<MemverseResponse>, t: Throwable) {
-                Log.e(TAG, "tweetsCall Failure:${call.request()}${t.message}")
+                Log.e(TAG, "memversesCall Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
 
             }

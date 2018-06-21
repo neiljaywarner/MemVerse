@@ -26,6 +26,8 @@ data class Memverse(val translation: String = "",
             val format = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
             return format.parse(next_test)
         }
+
+    fun toDisplayString() = "$ref: ${verse.text}"
 }
 
 data class Verse(val text: String = "")
