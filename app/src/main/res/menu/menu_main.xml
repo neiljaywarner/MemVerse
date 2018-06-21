@@ -5,9 +5,16 @@
     <!-- TODO: use material design drawable and see if it looks better, and/or tint with better color -->
     <item
         android:id="@+id/menu_item_share"
-        android:icon="@android:drawable/ic_menu_share"
+        android:icon="@drawable/ic_share_white_24dp"
         android:title="@string/share"
-        android:visible="false"
         app:showAsAction="always" />
+
+    <!-- TODO: remove the logout later when it goes in navdrawer -->
+    <!-- TODO: use james' art for login screen logos -->
+
+    <item
+        android:id="@+id/menu_item_logout"
+        android:title="@string/logout"
+        app:showAsAction="never" />
     <!--TODO: make visible and finish share out feature for v 0.35 -->
 </menu>

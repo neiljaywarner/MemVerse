@@ -14,6 +14,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.network.BearerTokenResponse
 import com.spiritflightapps.memverse.network.PasswordTokenRequest
@@ -36,11 +38,27 @@ class LoginActivity : AppCompatActivity() {
      * Keep track of the login task to ensure we can cancel it if requested.
      */
 
+    // put in baseactivity or mainapplication
+    private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //TODO: Move to mainapplication
+        Hawk.init(applicationContext).build()
+
+        val authToken = Hawk.get(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
+        if (authToken.isNotBlank()) {
+            ServiceGenerator.setPasswordAuthToken(authToken)
+
+            // TODO: newIntent pattern
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+            finish()
+            return
+        }
         setContentView(R.layout.activity_login)
-
-
 
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -128,7 +146,11 @@ class LoginActivity : AppCompatActivity() {
                     val bearerTokenResponse = response.body()
 
                     Log.d(TAG, "bearerTokenCall:token_type=" + bearerTokenResponse!!.tokenType)
-                    ServiceGenerator.setPasswordAuthToken(bearerTokenResponse.accessToken)
+                    val authToken = bearerTokenResponse.accessToken
+                    ServiceGenerator.setPasswordAuthToken(authToken)
+
+                    Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
+                    trackLogin()
                     val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(mainIntent)
 
@@ -151,6 +173,15 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
+    private fun trackLogin() {
+        val bundle = Bundle()
+        //todo: use bundleOf in ktx
+        bundle.putString(FirebaseAnalytics.Param.METHOD, "regular")
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
+    }
+
+
+
     private fun isEmailValid(email: String): Boolean {
         //TODO: Replace this with your own logic, such as what's build into android pattern
         return email.contains("@")
@@ -166,38 +197,29 @@ class LoginActivity : AppCompatActivity() {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private fun showProgress(show: Boolean) {
-        // TODO: REmove the if and the commetn...
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-            login_form.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_form.visibility = if (show) View.GONE else View.VISIBLE
-                        }
-                    })
+        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_progress.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-                        }
-                    })
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            login_progress.visibility = if (show) View.VISIBLE else View.GONE
-            login_form.visibility = if (show) View.GONE else View.VISIBLE
-        }
+        login_form.visibility = if (show) View.GONE else View.VISIBLE
+        login_form.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 0 else 1).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        login_form.visibility = if (show) View.GONE else View.VISIBLE
+                    }
+                })
+
+        login_progress.visibility = if (show) View.VISIBLE else View.GONE
+        login_progress.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 1 else 0).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        login_progress.visibility = if (show) View.VISIBLE else View.GONE
+                    }
+                })
     }
+
 
 }

@@ -15,8 +15,9 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 4  // 2 matches 0.1 - Beta, 3 matches 0.2 beta (june 2 2018) 4 matches 0.31-beta (June 13, 2018, ui refresh)
-        versionName "0.31 - Beta"
+        versionCode 5  // 2 matches 0.1 - Beta, 3 matches 0.2 beta (june 2 2018) 4 matches 0.31-beta (June 13, 2018, ui refresh)
+        //  5 = 0.32 - beta from 21-june-2018
+        versionName "0.32 - Beta"
         // 0.32 will include the share feature and a bit better ui...
         // just this is so much of an improvement
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -69,6 +70,13 @@ dependencies {
 
     implementation 'com.squareup.okhttp3:logging-interceptor:3.8.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.3'
+
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
+    // TODO: Clean up and modularize securesharedprefs stuff
+    implementation "com.orhanobut:hawk:2.0.1"
+
+
 
 
 }
