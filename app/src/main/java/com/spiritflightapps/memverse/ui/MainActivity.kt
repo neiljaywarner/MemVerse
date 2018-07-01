@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         // TODO: Spinner
         makeGetMemversesNetworkCall()
 
-        setupLiveFeedback()
 
 
         button_next.setOnClickListener {
@@ -110,6 +109,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun trackShare(itemName: String) {
         val bundle = Bundle()
+        // TODO: track share method with intent broadcast receiver.
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
     }
@@ -169,9 +169,13 @@ class MainActivity : AppCompatActivity() {
         // TODO: Fix the sort date, i don't think it's quite right
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
-        updateVerseUi()
-        updateButtonUi()
-
+        if (memverses.size > 0) {
+            updateVerseUi()
+            updateButtonUi()
+            setupLiveFeedback()
+        } else {
+            text_reference.text = "No verses found; please make sure you have a valid network connection and verses added from www.memverse.com"
+        }
 
     }
 
