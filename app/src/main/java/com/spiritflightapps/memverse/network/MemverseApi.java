@@ -2,6 +2,7 @@ package com.spiritflightapps.memverse.network;
 
 
 import com.spiritflightapps.memverse.model.MemverseResponse;
+import com.spiritflightapps.memverse.model.RatePerformanceResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -9,6 +10,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 /**
  * Created by neil on 1/15/17.
@@ -38,6 +40,34 @@ public interface MemverseApi {
     Call<MemverseResponse> fetchMemverses();
     // e.g. Learning, Memorized, Pending order.. hopefully... so pending is end of page 1 or not on page 1.
     // 100 per page = plenty for mobile
+
+
+    // https://www.memverse.com/api/index.html#!/memverse/updateMemverseById/234?q=2
+
+    @PUT
+    Call<RatePerformanceResponse> ratePerformance()
+    //id path - long
+    // 1-5 in q=
+
+        /* response is
+        {
+  "id": 0,
+  "verse_id": 0,
+  "user_id": 0,
+  "efactor": 0,
+  "test_interval": 0,
+  "rep_n": 0,
+  "next_test": "string",
+  "status": "string",
+  "prev_verse": 0,
+  "ref_interval": 0,
+  "next_ref_test": "string",
+  "passage_id": 0,
+  "subsection": 0
+}
+
+
+         */
 
 
     // Note for memverse API: /oauth only endpoint with no 1/ in it.
