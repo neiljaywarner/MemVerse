@@ -19,7 +19,6 @@ import com.spiritflightapps.memverse.model.RatePerformanceResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.longToast
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 import retrofit2.Call
@@ -279,7 +278,7 @@ class MainActivity : AppCompatActivity() {
                     if (myRatingResponse == null) {
                         Log.e(TAG, "Rate performance response is null, which probably tells us nothing.")
                     } else {
-                        longToast("myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
+                        Log.d("MV-RatePerf", "myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
                         onRatePerformanceNetworkCallSuccess(myRatingResponse)
                         // next button
                     }
