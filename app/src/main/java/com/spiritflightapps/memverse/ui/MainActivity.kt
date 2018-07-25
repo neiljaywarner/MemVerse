@@ -47,15 +47,9 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        button_next.setOnClickListener {
-            currentVerseIndex++
-            updateUi()
-        }
+        button_next.setOnClickListener { gotoNextVerse() }
 
-        button_prev.setOnClickListener {
-            currentVerseIndex--
-            updateUi()
-        }
+        button_prev.setOnClickListener { gotoPreviousVerse() }
 
         // TODO: translation; we do have users in other parts of the world.
         button_show.setOnClickListener {
@@ -76,6 +70,16 @@ class MainActivity : AppCompatActivity() {
         button5.setOnClickListener { rate("5") }
 
 
+    }
+
+    fun gotoNextVerse() {
+        currentVerseIndex++
+        updateUi()
+    }
+
+    fun gotoPreviousVerse() {
+        currentVerseIndex--
+        updateUi()
     }
 
     //note: must be 1-5
@@ -211,7 +215,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateVerseUi() = try {
         with(currentVerse) {
-            text_reference.text = ref + "---id=" + currentVerse.id
+            text_reference.text = ref
             title = "$ref ($status)"
         }
     } catch (e: Exception) {
@@ -276,6 +280,8 @@ class MainActivity : AppCompatActivity() {
                         Log.e(TAG, "Rate performance response is null, which probably tells us nothing.")
                     } else {
                         longToast("myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
+                        onRatePerformanceNetworkCallSuccess(myRatingResponse)
+                        // next button
                     }
                 } else {
                     //TODO: Could check other response codes or if have network connection
@@ -292,6 +298,11 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private fun onRatePerformanceNetworkCallSuccess(myRatingResponse: RatePerformanceResponse) {
+        //todo: Logcat the nextverse, or even show user "you'll be asked again in x number of days"
+        gotoNextVerse()
     }
 
     fun showNetworkErrorToast() =
