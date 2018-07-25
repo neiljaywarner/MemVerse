@@ -15,9 +15,11 @@ import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
+import com.spiritflightapps.memverse.model.RatePerformanceResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.longToast
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 import retrofit2.Call
@@ -67,6 +69,18 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        button1.setOnClickListener { rate("1") }
+        button2.setOnClickListener { rate("2") }
+        button3.setOnClickListener { rate("3") }
+        button4.setOnClickListener { rate("4") }
+        button5.setOnClickListener { rate("5") }
+
+
+    }
+
+    //note: must be 1-5
+    fun rate(rating: String) {
+        makeRateNetworkCall(currentVerse.id, rating)
     }
 
     override
@@ -163,13 +177,14 @@ class MainActivity : AppCompatActivity() {
     val currentVerse: Memverse
         get() = memverses[currentVerseIndex]
 
+    // TODO: Only show stuff up to this date, dont' show pending, etc.
     private fun updateUi(memverseResponse: MemverseResponse) {
         // TODO: Fix count to say something like _ of _ for the number w/o pending, etc
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
         // TODO: Fix the sort date, i don't think it's quite right
         memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
         // TODO: Let them practice...make it a text below they can hide/show when stuck
-        if (memverses.size > 0) {
+        if (memverses.isNotEmpty()) {
             updateVerseUi()
             updateButtonUi()
             setupLiveFeedback()
@@ -196,7 +211,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateVerseUi() = try {
         with(currentVerse) {
-            text_reference.text = ref
+            text_reference.text = ref + "---id=" + currentVerse.id
             title = "$ref ($status)"
         }
     } catch (e: Exception) {
@@ -235,6 +250,43 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<MemverseResponse>, t: Throwable) {
                 Log.e(TAG, "memversesCall Failure:${call.request()}${t.message}")
+                showNetworkErrorToast()
+
+            }
+        })
+
+    }
+
+    private fun makeRateNetworkCall(verseId: String, rating: String) {
+        Log.d(TAG, "***** makeGetMemversesNetworkCall")
+
+        // TODO: Handle auth token in a better way
+        // reuse client, use insertKoin...
+        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
+
+        val memversesCall = memVersesApi.ratePerformance(verseId, rating)
+
+        memversesCall.enqueue(object : Callback<RatePerformanceResponse> {
+            override fun onResponse(call: Call<RatePerformanceResponse>, response: Response<RatePerformanceResponse>) {
+                Log.d(TAG, "memversesCall:Response code: " + response.code())
+                if (response.isSuccessful) {
+                    val myRatingResponse = response.body()
+
+                    if (myRatingResponse == null) {
+                        Log.e(TAG, "Rate performance response is null, which probably tells us nothing.")
+                    } else {
+                        longToast("myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
+                    }
+                } else {
+                    //TODO: Could check other response codes or if have network connection
+                    Toast.makeText(this@MainActivity, "sorry, something went wrong with rating network call ", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "response code = ${response.code()}")
+                    showNetworkErrorToast()
+                }
+            }
+
+            override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
+                Log.e(TAG, "ratePerormance Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
 
             }

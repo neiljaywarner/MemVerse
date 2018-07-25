@@ -48,7 +48,7 @@ public interface MemverseApi {
 
     // https://www.memverse.com/api/index.html#!/memverse/updateMemverseById/234?q=2
     ///memverses/5?q=2
-    @PUT("1/memverses/{user}q=")
+    @PUT("1/memverses/{user}")
     Call<RatePerformanceResponse> ratePerformance(@Path("user") String verseId, @Query("q") String rating);
     //id path - long
     // 1-5 in q=
