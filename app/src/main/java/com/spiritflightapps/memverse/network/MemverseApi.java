@@ -11,6 +11,8 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by neil on 1/15/17.
@@ -27,6 +29,8 @@ public interface MemverseApi {
     // also see
     //https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_understanding_username_password_oauth_flow.htm
 
+
+    // TODO: Convert to kotlin!!
     @FormUrlEncoded
     @POST("/oauth/token")
     Call<BearerTokenResponse> getBearerToken(@Field("grant_type") String grantType);
@@ -43,9 +47,9 @@ public interface MemverseApi {
 
 
     // https://www.memverse.com/api/index.html#!/memverse/updateMemverseById/234?q=2
-
-    @PUT
-    Call<RatePerformanceResponse> ratePerformance()
+    ///memverses/5?q=2
+    @PUT("1/memverses/{user}q=")
+    Call<RatePerformanceResponse> ratePerformance(@Path("user") String verseId, @Query("q") String rating);
     //id path - long
     // 1-5 in q=
 

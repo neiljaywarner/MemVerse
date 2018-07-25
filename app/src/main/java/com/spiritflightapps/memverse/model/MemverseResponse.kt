@@ -12,6 +12,8 @@ data class MemverseResponse(val count: Int = 0,
 
 
 data class Memverse(val translation: String = "",
+                    val id: String = "",
+                    val verse_id: String = "",
 
                     @SerializedName("verse")
                     val verse: Verse = Verse(),

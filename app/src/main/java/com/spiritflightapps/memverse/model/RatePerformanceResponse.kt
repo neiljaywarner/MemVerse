@@ -2,6 +2,7 @@ package com.spiritflightapps.memverse.model
 
 
 data class RatePerformanceResponse(val id: Int, val status: String, val next_test: String, val next_ref_test: String)
+//todo: add error class response.
 /*
 
 {
