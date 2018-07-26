@@ -118,38 +118,61 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
+            android:layout_weight="1"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
+            android:textColor="@color/white"
+            android:background="@color/medium_green"
             android:id="@+id/button1"
             android:text="1"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
+            android:layout_weight="1"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
+            android:textColor="@color/white"
+            android:background="@color/medium_green"
+
             android:id="@+id/button2"
             android:text="2"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
+            android:textColor="@color/white"
+            android:background="@color/medium_green"
             android:id="@+id/button3"
             android:text="3"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
         <Button
+            android:textColor="@color/white"
+            android:background="@color/medium_green"
             android:id="@+id/button4"
             android:text="4"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
 
         <Button
+            android:textColor="@color/white"
+            android:background="@color/medium_green"
             android:id="@+id/button5"
             android:text="5"
-            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="12dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
