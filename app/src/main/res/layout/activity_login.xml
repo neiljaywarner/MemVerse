@@ -77,7 +77,6 @@
             <!-- todo: use proper font, semibold, etc. try going tback to 45dp font
             when all controls have right fonts and edit texts have sizes ...-->
             <Button
-                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:id="@+id/button_signin"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -98,7 +97,7 @@
 
                 <TextView
                     android:textSize="14sp"
-                    android:textColor="@color/material_grey_50"
+                    android:textColor="@android:color/darker_gray"
                     android:layout_marginEnd="4dp"
                     android:layout_marginRight="4dp"
                     android:layout_marginStart="8dp"
