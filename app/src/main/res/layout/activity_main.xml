@@ -13,6 +13,19 @@
     https://material.io/develop/android/components/material-card-view/
     -->
 
+    <!-- TODO: Get better design for show button -->
+    <TextView
+        android:textAllCaps="true"
+        android:id="@+id/button_show"
+        android:layout_gravity="center_horizontal"
+        android:gravity="bottom"
+        android:textColor="@color/medium_green"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show" />
+
+
     <LinearLayout
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
@@ -102,18 +115,6 @@
         <!--
                 https://xd.adobe.com/spec/3b25bf4a-5e6b-41ee-513c-a1c9d41fd31d-4d14/screen/be763504-b6d7-459c-b8fb-a6f6485b7f4c/Learning-1/
                 -->
-        <Button
-            android:id="@+id/button_show"
-
-            android:background="@color/medium_green"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_width="0dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Show" />
 
 
 
