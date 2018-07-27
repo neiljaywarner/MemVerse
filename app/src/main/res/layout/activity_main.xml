@@ -13,27 +13,56 @@
     https://material.io/develop/android/components/material-card-view/
     -->
 
-    <android.support.design.card.MaterialCardView
-        style="@style/Widget.MaterialComponents.CardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="15dp"
-        app:cardElevation="5dp"
-        android:minHeight="42dp">
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_reference"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:layout_gravity="center"
-            tools:text="col 1:17"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <!-- NOTE: there were two errors upon vector graphic import from adobe xd, xml things not supported, but it still looks ok -->
+        <ImageView
+            android:id="@+id/button_prev"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_left_arrow_enabled"
+            android:layout_width="52dp"
+            android:layout_height="42dp" />
 
-    </android.support.design.card.MaterialCardView>
+        <android.support.design.card.MaterialCardView
+            style="@style/Widget.MaterialComponents.CardView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="15dp"
+            app:cardElevation="5dp"
+            android:minHeight="42dp">
+
+
+            <TextView
+                android:id="@+id/text_reference"
+                android:textSize="14dp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                tools:text="col 1:17"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/button_next"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_right_arrow_enabled"
+            android:layout_width="52dp"
+            android:layout_height="42dp" />
+
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/edit_verse_text"
@@ -75,6 +104,7 @@
                 -->
         <Button
             android:id="@+id/button_show"
+
             android:background="@color/medium_green"
             android:textColor="@color/white"
             android:textStyle="bold"
@@ -85,35 +115,8 @@
             android:layout_height="wrap_content"
             android:text="Show" />
 
-        <Button
-            android:visibility="invisible"
-            android:id="@+id/button_prev"
-            android:background="@color/medium_green"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:layout_weight="1"
 
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Prev" />
 
-        <!-- TODO: Change these to material button -->
-        <!-- TODO: Use Android Studio 3.2, androidx instead of support library, etc -->
-        <Button
-            android:id="@+id/button_next"
-            android:textColor="@color/white"
-            android:background="@color/medium_green"
-            android:textStyle="bold"
-            android:layout_weight="1"
-
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Next" />
 
     </LinearLayout>
 
