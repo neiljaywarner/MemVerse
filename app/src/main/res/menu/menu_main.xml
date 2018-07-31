@@ -9,6 +9,13 @@
         android:title="@string/share"
         app:showAsAction="always" />
 
+
+    <item
+        android:id="@+id/menu_verse_add"
+        android:icon="@android:drawable/ic_menu_add"
+        android:title="@string/share"
+        app:showAsAction="always" />
+
     <!-- TODO: remove the logout later when it goes in navdrawer -->
     <!-- TODO: use james' art for login screen logos -->
 

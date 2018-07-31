@@ -15,10 +15,8 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 62  // 2 matches 0.1 - Beta, 3 matches 0.2 beta (june 2 2018) 4 matches 0.31-beta (June 13, 2018, ui refresh)
-        //  5 = 0.32 - beta from 21-june-2018
-        // 62 matches 0.34-beta so room for in between if needed...
-        versionName "0.34 - beta" //todo: switch to beta
+        versionCode 67   // TOD: 70 for beta version.
+        versionName "0.35 - dev" //todo: switch to beta
 
         // 0.33 will 1-5 and  login art back
         // then
@@ -62,7 +60,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.google.firebase:firebase-core:16.0.1'
     //todo: change
-    implementation 'com.android.support:design:28.0.0-alpha3'
+    implementation 'com.android.support:design:28.0.0-beta01'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
