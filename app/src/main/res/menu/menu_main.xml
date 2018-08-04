@@ -5,14 +5,14 @@
     <!-- TODO: use material design drawable and see if it looks better, and/or tint with better color -->
     <item
         android:id="@+id/menu_item_share"
-        android:icon="@drawable/ic_share_white_24dp"
+        android:icon="@drawable/ic_share"
         android:title="@string/share"
         app:showAsAction="always" />
 
 
     <item
         android:id="@+id/menu_verse_add"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add"
         android:title="@string/share"
         app:showAsAction="always" />
 

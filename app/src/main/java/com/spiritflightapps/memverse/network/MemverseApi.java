@@ -38,6 +38,20 @@ public interface MemverseApi {
     @POST("oauth/token")
     Call<BearerTokenResponse> getBearerToken(@Body PasswordTokenRequest passwordTokenRequest);
 
+
+    // https://www.memverse.com/api/index.html#!/verse/findVerseByTlBkChVs
+    // TODO: Look up a verse first , eg. Psalms 27:1 then get its id, confirm it with user, then add it.
+    // e.g. https://www.memverse.com/1/verses/lookup?tl=NIV84&bk=Matt%20&ch=28&vs=18
+
+
+    //and then postmemverses once have id
+    //https://www.memverse.com/api/index.html#!/memverse/createMemverse
+    // with id 'long' field as the only param but paramtype path
+    // JUST LIKE RECORD RATING except with POST woo hoo
+
+
+
+
     // https://www.memverse.com/api/index.html#!/memverse/showMemverses
     // e.g. https://www.memverse.com/1/memverses?page=1
     @GET("1/memverses?page=1&sort=status")
