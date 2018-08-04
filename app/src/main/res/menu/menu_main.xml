@@ -10,12 +10,18 @@
         app:showAsAction="always" />
 
 
+    <!-- make titles be add and elete -->
     <item
         android:id="@+id/menu_verse_add"
         android:icon="@drawable/ic_add"
         android:title="@string/share"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_verse_delete"
+        android:icon="@drawable/ic_delete_black_24dp"
+        android:title="@string/share"
+        app:showAsAction="always" />
     <!-- TODO: remove the logout later when it goes in navdrawer -->
     <!-- TODO: use james' art for login screen logos -->
 

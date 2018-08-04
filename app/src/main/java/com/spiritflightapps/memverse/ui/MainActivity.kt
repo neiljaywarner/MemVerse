@@ -124,6 +124,7 @@ class MainActivity : AppCompatActivity() {
         mFirebaseAnalytics.logEvent("logout", Bundle())
     }
 
+    // TODO: see if this actually works and use google analytics instead of firebase if needed
     private fun trackShare(itemName: String) {
         val bundle = Bundle()
         // TODO: track share method with intent broadcast receiver.
