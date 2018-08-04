@@ -127,6 +127,7 @@ class MainActivity : AppCompatActivity() {
     private fun trackShare(itemName: String) {
         val bundle = Bundle()
         // TODO: track share method with intent broadcast receiver.
+
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
     }

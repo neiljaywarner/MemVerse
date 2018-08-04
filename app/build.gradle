@@ -80,6 +80,13 @@ dependencies {
 
 
 
+    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
+    // TODO: Clean up and modularize securesharedprefs stuff
+    implementation "com.orhanobut:hawk:2.0.1"
+
+
+
 
 }
 
