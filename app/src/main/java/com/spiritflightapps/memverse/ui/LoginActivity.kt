@@ -22,6 +22,7 @@ import com.spiritflightapps.memverse.network.PasswordTokenRequest
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.network.TwitterAuthUtils
 import kotlinx.android.synthetic.main.activity_login.*
+import org.jetbrains.anko.browse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,6 +70,8 @@ class LoginActivity : AppCompatActivity() {
         })
 
         button_signin.setOnClickListener { attemptLogin() }
+
+        button_signup.setOnClickListener { browse("https://www.memverse.com/users/sign_up") }
     }
 
 
