@@ -6,6 +6,7 @@ import com.spiritflightapps.memverse.model.RatePerformanceResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -48,8 +49,13 @@ public interface MemverseApi {
     //https://www.memverse.com/api/index.html#!/memverse/createMemverse
     // with id 'long' field as the only param but paramtype path
     // JUST LIKE RECORD RATING except with POST woo hoo
+    @POST("1/memverses/{id}")
+    Call<RatePerformanceResponse> addVerse(@Path("id") String verseId);
 
 
+    // **** TODO thsi one will be easy and Carina wants this one...
+    @DELETE("1/memverses/{user}")
+    Call<RatePerformanceResponse> deleteVerse(@Path("id") String verseId);
 
 
     // https://www.memverse.com/api/index.html#!/memverse/showMemverses
@@ -62,8 +68,8 @@ public interface MemverseApi {
 
     // https://www.memverse.com/api/index.html#!/memverse/updateMemverseById/234?q=2
     ///memverses/5?q=2
-    @PUT("1/memverses/{user}")
-    Call<RatePerformanceResponse> ratePerformance(@Path("user") String verseId, @Query("q") String rating);
+    @PUT("1/memverses/{id}")
+    Call<RatePerformanceResponse> ratePerformance(@Path("id") String verseId, @Query("q") String rating);
     //id path - long
     // 1-5 in q=
 
