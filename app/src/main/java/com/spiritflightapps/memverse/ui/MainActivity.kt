@@ -148,16 +148,41 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
+    // TODO: Unit test to handle psalms 27:1 and some others...
+    // TODO 2. work with this over time since this is part of the core experience
+    // e.g put back the "word1 ...word2 "
+    fun String.approximatelyStartsWith(subString: String): Boolean {
+        val s1 = this.stripNonAlphaNumeric()
+        val s2 = subString.stripNonAlphaNumeric()
+
+
+        return s1.startsWith(s2, true)
+
+    }
+
+    fun String.approximatelyEquals(string2: String) = this.stripNonAlphaNumeric() == string2.stripNonAlphaNumeric()
+
+    fun String.stripNonAlphaNumeric(): String {
+        return this.filter { it.isLetterOrDigit() }
+    }
+
+
+    // TODO: Later maybe do hte "rigthword1 ... rightword2" that the website does
+    // could even look at iOS code to determine the regex or the logic...
     private fun setupLiveFeedback() {
         // TODO: Refine this; the one online is friendly to semicolons vs periods adn some other stuff
+        //make it output according to the verse but count correct/not acording to friendly part...
+        //TODO: Unit test, for example with psalms 21
         edit_verse_text.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
                 val enteredString = edit_verse_text.text.toString()
-                if (currentVerse.verse.text.startsWith(enteredString)) {
+                if (currentVerse.verse.text.approximatelyStartsWith(enteredString)) {
+                    // maybe have it find the last character
                     text_verse_text.text = enteredString
+                    // TOD: Clean up a bit more where it shows the complete text...
                 }
 
-                if (currentVerse.verse.text.trim() == enteredString.trim()) {
+                if (currentVerse.verse.text.approximatelyEquals(enteredString)) {
                     title = "Correct! Good job"
                     Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
 
@@ -304,6 +329,46 @@ class MainActivity : AppCompatActivity() {
         //todo: Logcat the nextverse, or even show user "you'll be asked again in x number of days"
         gotoNextVerse()
     }
+
+    private fun makeDeleteVerseNetworkCall(verseId: String) {
+        Log.d(TAG, "***** makeDeleteVersesNetworkCall")
+
+        // TODO: Handle auth token in a better way
+        // reuse client, use insertKoin...
+        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
+
+        val memversesCall = memVersesApi.deleteVerse(verseId)
+
+        memversesCall.enqueue(object : Callback<RatePerformanceResponse> {
+            override fun onResponse(call: Call<RatePerformanceResponse>, response: Response<RatePerformanceResponse>) {
+                Log.d(TAG, "memversesCall:Response code: " + response.code())
+                if (response.isSuccessful) {
+                    val myRatingResponse = response.body()
+
+                    if (myRatingResponse == null) {
+                        Log.e(TAG, "Rate performance response is null, which probably tells us nothing.")
+                    } else {
+                        Log.d("MV-RatePerf", "myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
+                        onRatePerformanceNetworkCallSuccess(myRatingResponse)
+                        // next button
+                    }
+                } else {
+                    //TODO: Could check other response codes or if have network connection
+                    Toast.makeText(this@MainActivity, "sorry, something went wrong with rating network call ", Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "response code = ${response.code()}")
+                    showNetworkErrorToast()
+                }
+            }
+
+            override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
+                Log.e(TAG, "ratePerormance Failure:${call.request()}${t.message}")
+                showNetworkErrorToast()
+
+            }
+        })
+
+    }
+
 
     fun showNetworkErrorToast() =
             Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
