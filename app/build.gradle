@@ -16,7 +16,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 27
         versionCode 67   // TOD: 70 for beta version.
-        versionName "0.35 - dev" //todo: switch to beta
+        versionName "0.35" //when go to version 68 or 70, go to 0.36-dev
 
         // 0.33 will 1-5 and  login art back
         // then
