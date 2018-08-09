@@ -53,10 +53,10 @@ class MainActivity : AppCompatActivity() {
         // TODO: translation; we do have users in other parts of the world.
         button_show.setOnClickListener {
             if (button_show.text == "Show") {
-                text_verse_text.text = currentVerse.verse.text
+                text_verse_hint.text = currentVerse.verse.text
                 button_show.text = "Hide"
             } else {
-                text_verse_text.text = ""
+                text_verse_hint.text = ""
                 button_show.text = "Show"
             }
 
@@ -126,6 +126,7 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: see if this actually works and use google analytics instead of firebase if needed
     private fun trackShare(itemName: String) {
+        // LOG CHECKPOINT ?
         val bundle = Bundle()
         // TODO: track share method with intent broadcast receiver.
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
@@ -135,7 +136,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateUi() {
         edit_verse_text.setText("")
         edit_verse_text.hint = ""
-        text_verse_text.text = ""
+        text_verse_live_feedback.text = ""
         button_show.text = "Show"
         updateVerseUi()
         updateButtonUi()
@@ -178,7 +179,7 @@ class MainActivity : AppCompatActivity() {
                 val enteredString = edit_verse_text.text.toString()
                 if (currentVerse.verse.text.approximatelyStartsWith(enteredString)) {
                     // maybe have it find the last character
-                    text_verse_text.text = enteredString
+                    text_verse_live_feedback.text = enteredString
                     // TOD: Clean up a bit more where it shows the complete text...
                 }
 
@@ -278,6 +279,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<MemverseResponse>, t: Throwable) {
+                // ** TODO Use Timber so that crashes in development don't get sent!!!
                 Log.e(TAG, "memversesCall Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
 
@@ -311,6 +313,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     //TODO: Could check other response codes or if have network connection
                     Toast.makeText(this@MainActivity, "sorry, something went wrong with rating network call ", Toast.LENGTH_LONG).show()
+                    // *** TODO: Report to crashlytics  specifically or something?
                     Log.e(TAG, "response code = ${response.code()}")
                     showNetworkErrorToast()
                 }

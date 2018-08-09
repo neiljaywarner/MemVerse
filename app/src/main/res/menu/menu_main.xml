@@ -2,7 +2,6 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- TODO: use material design drawable and see if it looks better, and/or tint with better color -->
     <item
         android:id="@+id/menu_item_share"
         android:icon="@drawable/ic_share"
@@ -13,14 +12,18 @@
     <!-- make titles be add and elete -->
     <item
         android:id="@+id/menu_verse_add"
+        android:visible="false"
         android:icon="@drawable/ic_add"
         android:title="@string/share"
         app:showAsAction="always" />
 
+    <!-- COULD USE same branch for add/remove/tweak, then make new repo with navdrawer and cleaner code-->
+
     <item
         android:id="@+id/menu_verse_delete"
         android:icon="@drawable/ic_delete_black_24dp"
-        android:title="@string/share"
+        android:visible="false"
+        android:title="@string/delete"
         app:showAsAction="always" />
     <!-- TODO: remove the logout later when it goes in navdrawer -->
     <!-- TODO: use james' art for login screen logos -->
@@ -29,5 +32,5 @@
         android:id="@+id/menu_item_logout"
         android:title="@string/logout"
         app:showAsAction="never" />
-    <!--TODO: make visible and finish share out feature for v 0.35 -->
+    <!--TODO: don't forget about share-in feature for add, this will be really cool -->
 </menu>

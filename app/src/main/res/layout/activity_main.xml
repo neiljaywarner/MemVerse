@@ -90,7 +90,7 @@
 
 
     <TextView
-        android:id="@+id/text_verse_text"
+        android:id="@+id/text_verse_live_feedback"
         android:textSize="14sp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
@@ -102,6 +102,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/text_verse_hint"
+        android:visibility="visible"
+        android:textSize="12sp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+
+        tools:text="He is before all things, and in him all things hold together"
+        android:layout_marginTop="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 
     <LinearLayout
         android:layout_marginTop="57dp"

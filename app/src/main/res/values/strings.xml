@@ -19,4 +19,5 @@
     <string name="type_scripture_here">Type the scripture here</string>
     <string name="not_a_member">Not a member?</string>
     <string name="sign_up">Sign up</string>
+    <string name="delete">Delete</string>
 </resources>
