@@ -40,9 +40,6 @@ class MainActivity : AppCompatActivity() {
         Hawk.init(applicationContext).build()
 
 
-        // TODO: maybe Save bearer token, but they never expire, so get a strategy, and get encryption
-        // TODO: Spinner
-        makeGetMemversesNetworkCall()
 
 
 
@@ -71,6 +68,12 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        makeGetMemversesNetworkCall()
+
+    }
+
     fun gotoNextVerse() {
         currentVerseIndex++
         updateUi()
@@ -83,6 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     //note: must be 1-5
     fun rate(rating: String) {
+        //trackRate(currentVerse.verse, rating)
         makeRateNetworkCall(currentVerse.id, rating)
     }
 
@@ -125,6 +129,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // TODO: see if this actually works and use google analytics instead of firebase if needed
+    // eventuallt track whay they shared with ...
     private fun trackShare(itemName: String) {
         // LOG CHECKPOINT ?
         val bundle = Bundle()
