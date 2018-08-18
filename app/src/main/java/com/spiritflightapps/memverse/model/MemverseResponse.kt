@@ -28,7 +28,7 @@ data class Memverse(val translation: String = "",
             return format.parse(next_test)
         }
 
-    fun toDisplayString() = "$ref: ${verse.text}"
+    fun toDisplayString() = "${verse.text} $ref $translation"
 }
 
 data class Verse(val text: String = "")
