@@ -15,8 +15,8 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 70   // 70=0.37 = beta version
-        versionName "0.37" //
+        versionCode 72   // 70=0.37 = beta version
+        versionName "0.38 - dev" //
 
         // 0.33 will 1-5 and  login art back
         // then
