@@ -11,8 +11,7 @@ data class MemverseResponse(val count: Int = 0,
                             val verses: List<Memverse>)
 
 
-data class Memverse(val translation: String = "",
-                    val id: String = "",
+data class Memverse(val id: String = "",
 
                     @SerializedName("verse")
                     val verse: Verse = Verse(),
@@ -28,10 +27,10 @@ data class Memverse(val translation: String = "",
             return format.parse(next_test)
         }
 
-    fun toDisplayString() = "${verse.text} $ref $translation"
+    fun toDisplayString() = "${verse.text} $ref ${verse.translation}"
 }
 
-data class Verse(val text: String = "")
+data class Verse(val text: String = "", val translation: String = "")
 
 
 /*
