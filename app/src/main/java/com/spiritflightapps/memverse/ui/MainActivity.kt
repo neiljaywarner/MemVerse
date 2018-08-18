@@ -253,11 +253,12 @@ class MainActivity : AppCompatActivity() {
 
     // TODO: Only show stuff up to this date, dont' show pending, etc.
     private fun updateUi(memverseResponse: MemverseResponse) {
-        // TODO: Fix count to say something like _ of _ for the number w/o pending, etc
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
-        // TODO: Fix the sort date, i don't think it's quite right
-        memverses = memverseResponse.verses.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
-        // TODO: Let them practice...make it a text below they can hide/show when stuck
+        // TODO: Fix the sort date, i don't think it's quite right]
+        // todo: make it by default notquiz u for future dates
+        val versesNotPending = memverseResponse.verses.filterNot { it.status == "Pending" }
+        memverses = versesNotPending.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
+
         if (memverses.isNotEmpty()) {
             updateVerseUi()
             updateButtonUi()
@@ -287,8 +288,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateVerseUi() = try {
         with(currentVerse) {
+            val verseNum = currentVerseIndex + 1
             text_reference.text = ref
-            title = "$ref ($status)"
+            title = "Memverse $verseNum/${memverses.size}"
+            // TODO: later maybe put the memorized/learning part.
         }
     } catch (e: Exception) {
         // TODO: Log to analytics so we know how often?
