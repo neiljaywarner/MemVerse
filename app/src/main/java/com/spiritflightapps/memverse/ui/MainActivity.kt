@@ -43,21 +43,19 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        button_next.setOnClickListener { gotoNextVerse() }
-
-        button_prev.setOnClickListener { gotoPreviousVerse() }
-
-        // TODO: translation; we do have users in other parts of the world.
-        button_show.setOnClickListener {
-            if (button_show.text == "Show") {
-                text_verse_hint.text = currentVerse.verse.text
-                button_show.text = "Hide"
-            } else {
-                text_verse_hint.text = ""
-                button_show.text = "Show"
-            }
-
+        button_next.setOnClickListener {
+            trackNext()
+            gotoNextVerse()
         }
+
+        button_prev.setOnClickListener {
+            trackPrevious()
+            gotoPreviousVerse()
+        }
+
+        button_show.setOnClickListener { onShowClicked() }
+
+        button_hide.setOnClickListener { onHideClicked() }
 
         button1.setOnClickListener { rate("1") }
         button2.setOnClickListener { rate("2") }
@@ -66,6 +64,20 @@ class MainActivity : AppCompatActivity() {
         button5.setOnClickListener { rate("5") }
 
 
+    }
+
+    private fun onShowClicked() {
+        trackShowClicked()
+        text_verse_hint.text = currentVerse.verse.text
+        button_hide.visibility = View.VISIBLE
+        button_show.visibility = View.INVISIBLE
+    }
+
+    private fun onHideClicked() {
+        trackHideClicked()
+        text_verse_hint.text = ""
+        button_hide.visibility = View.INVISIBLE
+        button_show.visibility = View.VISIBLE
     }
 
     override fun onResume() {
@@ -80,13 +92,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun gotoPreviousVerse() {
+        trackPrevious()
         currentVerseIndex--
         updateUi()
     }
 
     //note: must be 1-5
     fun rate(rating: String) {
-        //trackRate(currentVerse.verse, rating)
+        // TODO: could move rating to success/failure dep network success...
+        trackRate(currentVerse.ref, rating)
         makeRateNetworkCall(currentVerse.id, rating)
     }
 
@@ -124,25 +138,50 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
+    private fun trackShowClicked() {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, currentVerse.ref)
+        mFirebaseAnalytics.logEvent("show", Bundle())
+    }
+
+    private fun trackHideClicked() {
+        mFirebaseAnalytics.logEvent("hide", Bundle())
+    }
+
     private fun trackLogout() {
         mFirebaseAnalytics.logEvent("logout", Bundle())
     }
 
+    private fun trackNext() {
+        mFirebaseAnalytics.logEvent("next", Bundle())
+    }
+
+    private fun trackPrevious() {
+        mFirebaseAnalytics.logEvent("previous", Bundle())
+    }
+
     // TODO: see if this actually works and use google analytics instead of firebase if needed
     // eventuallt track whay they shared with ...
-    private fun trackShare(itemName: String) {
-        // LOG CHECKPOINT ?
+    private fun trackShare(verseRef: String) {
         val bundle = Bundle()
         // TODO: track share method with intent broadcast receiver.
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, verseRef)
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle)
+    }
+
+    private fun trackRate(itemName: String, rating: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
+        bundle.putString(FirebaseAnalytics.Param.LEVEL, rating)
+        mFirebaseAnalytics.logEvent("rate", bundle)
     }
 
     private fun updateUi() {
         edit_verse_text.setText("")
         edit_verse_text.hint = ""
         text_verse_live_feedback.text = ""
-        button_show.text = "Show"
+        button_show.visibility = View.VISIBLE
+        button_hide.visibility = View.INVISIBLE
         updateVerseUi()
         updateButtonUi()
     }
@@ -166,9 +205,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun String.approximatelyEquals(string2: String) = this.stripNonAlphaNumeric() == string2.stripNonAlphaNumeric()
+    fun String.approximatelyEquals(string2: String) = this.stripNonAlphaNumeric().toLowerCase() == string2.stripNonAlphaNumeric().toLowerCase()
 
-    fun String.stripNonAlphaNumeric(): String {
+    private fun String.stripNonAlphaNumeric(): String {
         return this.filter { it.isLetterOrDigit() }
     }
 
@@ -242,6 +281,8 @@ class MainActivity : AppCompatActivity() {
         } else {
             button_prev.visibility = View.VISIBLE
         }
+
+        text_verse_hint.text = ""
     }
 
     private fun updateVerseUi() = try {

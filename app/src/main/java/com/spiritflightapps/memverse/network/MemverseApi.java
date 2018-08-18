@@ -96,3 +96,124 @@ public interface MemverseApi {
 
     // Note for memverse API: /oauth only endpoint with no 1/ in it.
 }
+/*
+translations - can use code for add verse
+{
+  "response": [
+    {
+      "Name": "English",
+      "Abbreviation": "EN",
+      "Translations": [
+        {
+          "Name": "Amplified Bible (Classic Edition) (1987)",
+          "Abbreviation": "AMP"
+        },
+        {
+          "Name": "Authorized King James Version (1769)",
+          "Abbreviation": "AKJ"
+        },
+        {
+          "Name": "Biblical Greek (SBLGNT) (2010)",
+          "Abbreviation": "GRK"
+        },
+        {
+          "Name": "Contemporary English Version (1995)",
+          "Abbreviation": "CEV"
+        },
+        {
+          "Name": "Darby Translation",
+          "Abbreviation": "DTL"
+        },
+        {
+          "Name": "Easy-to-Read Version (2006)",
+          "Abbreviation": "ERV"
+        },
+        {
+          "Name": "English Standard Version (2007)",
+          "Abbreviation": "ESV07"
+        },
+        {
+          "Name": "English Standard Version (2011)",
+          "Abbreviation": "ESV"
+        },
+        {
+          "Name": "Geneva Bible (1599)",
+          "Abbreviation": "GEN"
+        },
+        {
+          "Name": "God's Word Translation (1995)",
+          "Abbreviation": "GW"
+        },
+        {
+          "Name": "Good News Translation (1992)",
+          "Abbreviation": "GNT"
+        },
+        {
+          "Name": "Holman Christian Standard Bible (2009)",
+          "Abbreviation": "HCS"
+        },
+        {
+          "Name": "King James Version (Modernized/1987)",
+          "Abbreviation": "KJV"
+        },
+        {
+          "Name": "New American Standard Bible (1995)",
+          "Abbreviation": "NAS"
+        },
+        {
+          "Name": "New Century Version (2005)",
+          "Abbreviation": "NCV"
+        },
+        {
+          "Name": "New International Reader's Version (1998)",
+          "Abbreviation": "IRV"
+        },
+        {
+          "Name": "New International Version (1984)",
+          "Abbreviation": "NIV"
+        },
+        {
+          "Name": "New International Version (2011)",
+          "Abbreviation": "NNV"
+        },
+        {
+          "Name": "New King James Version (1982)",
+          "Abbreviation": "NKJ"
+        },
+        {
+          "Name": "New Living Translation (2007)",
+          "Abbreviation": "NLT"
+        },
+        {
+          "Name": "New Living Translation (2015)",
+          "Abbreviation": "NLT15"
+        },
+        {
+          "Name": "New Revised Standard Version (1989)",
+          "Abbreviation": "NRS"
+        },
+        {
+          "Name": "Revised Standard Version (1971)",
+          "Abbreviation": "RSV"
+        },
+        {
+          "Name": "Scottish Metrical Psalter",
+          "Abbreviation": "SMP"
+        },
+        {
+          "Name": "Scottish Metrical Psalter: B",
+          "Abbreviation": "SMPB"
+        },
+        {
+          "Name": "Scottish Metrical Psalter: C",
+          "Abbreviation": "SMPC"
+        },
+        {
+          "Name": "The Message (2002)",
+          "Abbreviation": "MSG"
+        },
+        {
+          "Name": "Updated King James Version",
+          "Abbreviation": "UKJ"
+        }
+ */
