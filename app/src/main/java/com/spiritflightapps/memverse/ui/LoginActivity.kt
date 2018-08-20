@@ -21,6 +21,7 @@ import com.spiritflightapps.memverse.network.BearerTokenResponse
 import com.spiritflightapps.memverse.network.PasswordTokenRequest
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.network.TwitterAuthUtils
+import com.spiritflightapps.memverse.utils.Prefs
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.browse
 import retrofit2.Call
@@ -40,6 +41,8 @@ class LoginActivity : AppCompatActivity() {
      */
 
     // put in baseactivity or mainapplication
+    // TODO: Abstract this out into helper class so we can have multiple analytics
+    // is easy to have BaseActivity that
     private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
 
 
@@ -71,7 +74,10 @@ class LoginActivity : AppCompatActivity() {
 
         button_signin.setOnClickListener { attemptLogin() }
 
-        button_signup.setOnClickListener { browse("https://www.memverse.com/users/sign_up") }
+        button_signup.setOnClickListener {
+            trackSignup()
+            browse("https://www.memverse.com/users/sign_up")
+        }
     }
 
 
@@ -129,11 +135,11 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login(email: String, password: String) {
         Log.d(TAG, "*** Retrieving bearer token.")
-        val twitterApi = ServiceGenerator.createBearerKeyService(
+        val memVerseApi = ServiceGenerator.createBearerKeyService(
                 TwitterAuthUtils.generateEncodedBearerTokenCredentials())
 
         val passwordTokenRequest = PasswordTokenRequest(username = email, password = password)
-        val bearerTokenCall = twitterApi.getBearerToken(passwordTokenRequest)
+        val bearerTokenCall = memVerseApi.getBearerToken(passwordTokenRequest)
         // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
 
         // also consider https://github.com/openid/AppAuth-Android
@@ -153,12 +159,14 @@ class LoginActivity : AppCompatActivity() {
                     ServiceGenerator.setPasswordAuthToken(authToken)
 
                     Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
+                    Prefs.saveToPrefs(this@LoginActivity, Prefs.EMAIL, email)
                     trackLogin()
                     val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(mainIntent)
 
 
                 } else {
+                    //TODO: Consider reporting to analytics if this happens and user has connectivity, not airplane mode, etc.
                     Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
 
                     Log.e(TAG, "Response invalid, check consumer key/secret combination if 403")
@@ -181,6 +189,10 @@ class LoginActivity : AppCompatActivity() {
         //todo: use bundleOf in ktx
         bundle.putString(FirebaseAnalytics.Param.METHOD, "regular")
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
+    }
+
+    private fun trackSignup() {
+        mFirebaseAnalytics.logEvent("clicked_signup_link", Bundle())
     }
 
 

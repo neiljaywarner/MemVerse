@@ -28,6 +28,13 @@
     <!-- TODO: remove the logout later when it goes in navdrawer -->
     <!-- TODO: use james' art for login screen logos -->
 
+    <!-- TOOD: USE Testfairy or something with annotated screenshots? -->
+
+    <item
+        android:id="@+id/menu_item_feedback"
+        android:title="@string/feedback"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_item_logout"
         android:title="@string/logout"

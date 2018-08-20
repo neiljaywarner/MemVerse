@@ -11,6 +11,8 @@ import android.preference.PreferenceManager;
 
 public class Prefs {
 
+    public static final String EMAIL = "prefs_key_email";
+
     /**
      * Called to save supplied value in shared preferences against given key.
      *

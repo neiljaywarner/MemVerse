@@ -76,6 +76,9 @@ dependencies {
     // TODO: Clean up and modularize securesharedprefs stuff
     implementation "com.orhanobut:hawk:2.0.1"
 
+    //doorbell.io for easy, free/freeish user feedback
+    implementation 'io.doorbell:android-sdk:0.2.8@aar'
+
 
 
 

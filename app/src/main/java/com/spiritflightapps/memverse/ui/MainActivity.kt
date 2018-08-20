@@ -18,6 +18,8 @@ import com.spiritflightapps.memverse.model.MemverseResponse
 import com.spiritflightapps.memverse.model.RatePerformanceResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
+import com.spiritflightapps.memverse.utils.Prefs
+import io.doorbell.android.Doorbell
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
@@ -126,8 +128,65 @@ class MainActivity : AppCompatActivity() {
                 logout()
                 return true
             }
+            R.id.menu_item_feedback -> {
+                //TODO: MemverseAnalytics.track()
+                trackFeedbackOptionSelected()
+                showFeedbackDialog()
+                return true
+            }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun trackFeedbackOptionSelected() {
+        mFirebaseAnalytics.logEvent("feedback_option_selected", Bundle())
+    }
+
+    private fun showFeedbackDialog() {
+        // new Doorbell(this, 9502, "cAZTiCiG9HqCiHESkvJnFtSxaUwcDKCWhS7FLRL1UTtjYegRlihKDydT3Jyynx4s").show();
+        val appId = 9502 // Replace with your application's ID
+        val apiKey = "cAZTiCiG9HqCiHESkvJnFtSxaUwcDKCWhS7FLRL1UTtjYegRlihKDydT3Jyynx4s" // Replace with your application's API key
+        val doorbellDialog = Doorbell(this, appId.toLong(), apiKey) // Create the Doorbell object
+
+        //****TODO****: Save this
+        //doorbellDialog.setEmail("name@example.com") // Prepopulate the email address field
+        val email = Prefs.getFromPrefs(applicationContext, Prefs.EMAIL, "")
+        doorbellDialog.setEmail(email)
+        doorbellDialog.addProperty("loggedIn", true) // Optionally add some properties
+
+
+        // TODO: add some stuff like has rated, etc?
+        //doorbellDialog.addProperty("loginCount", 123)
+        // Hide this when can
+        //doorbellDialog.setEmailFieldVisibility(View.GONE) // Hide the email field, since we've filled it in already
+        //doorbellDialog.setPoweredByVisibility(View.GONE) // Hide the "Powered by Doorbell.io" text
+
+
+        //doorbellDialog.setTitle(R.string.doorbell_title);
+        //doorbellDialog.setEmailHint("Your address");
+        //doorbellDialog.setMessageHint("What would you like to tell us?");
+        //doorbellDialog.setPositiveButtonText("Send");
+        //doorbellDialog.setNegativeButtonText(android.R.string.cancel);
+        //doorbellDialog.setMessageHint("not sure why we'd want a message hint except to make sure translation occurs");
+
+
+        // Callback for when a message is successfully sent
+        doorbellDialog.setOnFeedbackSentCallback { message ->
+            // Show the message in a different way, or use your own message!
+            Log.d("MV", "Doorbell.io Feedback sent $message")
+            trackDoorbellFeedbackSent()
+        }
+
+        // Callback for when the dialog is shown
+        doorbellDialog.setOnShowCallback {
+            Log.d("MV", "Doorbell dialog shown")
+            trackDoorbellDialogShown()
+        }
+
+        // Capture a screenshot of the current activity, to be sent to Doorbell
+        doorbellDialog.captureScreenshot()
+
+        doorbellDialog.show()
     }
 
     fun logout() {
@@ -139,9 +198,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun trackShowClicked() {
-        val bundle = Bundle()
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, currentVerse.ref)
-        mFirebaseAnalytics.logEvent("show", Bundle())
+        val bundle = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_NAME, currentVerse.ref)
+        }
+        mFirebaseAnalytics.logEvent("show", bundle)
+    }
+
+    private fun trackDoorbellDialogShown() {
+        mFirebaseAnalytics.logEvent("doorbell_dialog_shown", Bundle())
+    }
+
+    private fun trackDoorbellFeedbackSent() {
+        mFirebaseAnalytics.logEvent("doorbell_feedback_sent", Bundle())
     }
 
     private fun trackHideClicked() {
