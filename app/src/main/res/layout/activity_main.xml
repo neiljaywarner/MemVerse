@@ -141,6 +141,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/viewGroupRatings"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:orientation="horizontal"

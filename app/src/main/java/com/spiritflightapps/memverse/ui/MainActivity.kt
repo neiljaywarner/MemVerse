@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
+import com.spiritflightapps.memverse.BuildConfig
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
@@ -23,6 +24,7 @@ import io.doorbell.android.Doorbell
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -101,6 +103,7 @@ class MainActivity : AppCompatActivity() {
 
     //note: must be 1-5
     fun rate(rating: String) {
+        Log.d(TAG, "MV-> Rating $rating")
         // TODO: could move rating to success/failure dep network success...
         trackRate(currentVerse.ref, rating)
         makeRateNetworkCall(currentVerse.id, rating)
@@ -143,31 +146,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFeedbackDialog() {
-        // new Doorbell(this, 9502, "cAZTiCiG9HqCiHESkvJnFtSxaUwcDKCWhS7FLRL1UTtjYegRlihKDydT3Jyynx4s").show();
         val appId = 9502 // Replace with your application's ID
-        val apiKey = "cAZTiCiG9HqCiHESkvJnFtSxaUwcDKCWhS7FLRL1UTtjYegRlihKDydT3Jyynx4s" // Replace with your application's API key
+        val apiKey = BuildConfig.DOORBELL_IO_API_KEY // Replace with your application's API key
         val doorbellDialog = Doorbell(this, appId.toLong(), apiKey) // Create the Doorbell object
 
-        //****TODO****: Save this
-        //doorbellDialog.setEmail("name@example.com") // Prepopulate the email address field
         val email = Prefs.getFromPrefs(applicationContext, Prefs.EMAIL, "")
         doorbellDialog.setEmail(email)
         doorbellDialog.addProperty("loggedIn", true) // Optionally add some properties
-
-
-        // TODO: add some stuff like has rated, etc?
-        //doorbellDialog.addProperty("loginCount", 123)
-        // Hide this when can
-        //doorbellDialog.setEmailFieldVisibility(View.GONE) // Hide the email field, since we've filled it in already
-        //doorbellDialog.setPoweredByVisibility(View.GONE) // Hide the "Powered by Doorbell.io" text
-
-
-        //doorbellDialog.setTitle(R.string.doorbell_title);
-        //doorbellDialog.setEmailHint("Your address");
-        //doorbellDialog.setMessageHint("What would you like to tell us?");
-        //doorbellDialog.setPositiveButtonText("Send");
-        //doorbellDialog.setNegativeButtonText(android.R.string.cancel);
-        //doorbellDialog.setMessageHint("not sure why we'd want a message hint except to make sure translation occurs");
 
 
         // Callback for when a message is successfully sent
@@ -226,6 +211,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun trackPrevious() {
         mFirebaseAnalytics.logEvent("previous", Bundle())
+    }
+
+    private fun trackRatedLast() {
+        //TODO: Record if they finished a session by rating everything due that day...
+        mFirebaseAnalytics.logEvent("rated_last", Bundle())
     }
 
     // TODO: see if this actually works and use google analytics instead of firebase if needed
@@ -338,8 +328,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateButtonUi() {
+        viewGroupRatings.visibility = View.VISIBLE
         Log.d("NJWMV", "currentIndex=$currentVerseIndex; lastIndex=${memverses.lastIndex}")
-        if (currentVerseIndex == memverses.lastIndex - 1) {
+        if (currentVerseIndex == memverses.lastIndex) {
             button_next.visibility = View.INVISIBLE
         } else {
             button_next.visibility = View.VISIBLE
@@ -406,7 +397,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun makeRateNetworkCall(verseId: String, rating: String) {
-        Log.d(TAG, "***** makeGetMemversesNetworkCall")
+        Log.d(TAG, "MV***** makeGetMemversesNetworkCall")
+        // TODO: Spinner when making rate netowrk call.
 
         // TODO: Handle auth token in a better way
         // reuse client, use insertKoin...
@@ -447,7 +439,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun onRatePerformanceNetworkCallSuccess(myRatingResponse: RatePerformanceResponse) {
         //todo: Logcat the nextverse, or even show user "you'll be asked again in x number of days"
-        gotoNextVerse()
+        if (currentVerseIndex == memverses.lastIndex) {
+            toast("This was your last verse; please tap the left arrow or come back tomorrow :)")
+            viewGroupRatings.visibility = View.INVISIBLE
+            trackRatedLast()
+            Log.d("MV", "Rate Network Call success- last verse")
+        } else {
+            Log.d("MV", "Rate Network Call success- verse $currentVerseIndex of ${memverses.lastIndex} - goto next")
+            gotoNextVerse()
+        }
     }
 
     private fun makeDeleteVerseNetworkCall(verseId: String) {
