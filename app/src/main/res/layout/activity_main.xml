@@ -9,7 +9,15 @@
     android:background="@color/white"
     tools:context=".ui.MainActivity">
 
+    <ProgressBar
+        android:id="@+id/progress_spinner"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
     <LinearLayout
+        android:id="@+id/content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"

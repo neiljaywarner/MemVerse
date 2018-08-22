@@ -22,6 +22,7 @@ import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.utils.Prefs
 import io.doorbell.android.Doorbell
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.indeterminateProgressDialog
 import org.jetbrains.anko.share
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.toast
@@ -361,6 +362,7 @@ class MainActivity : AppCompatActivity() {
     // TODO: Change to page number later to support those with > 100 verses?
     private fun makeGetMemversesNetworkCall() {
         Log.d(TAG, "***** makeGetMemversesNetworkCall")
+        val dialogFetch = indeterminateProgressDialog(message = "Please wait a bit…", title = "Fetching verses")
 
         // TODO: Handle auth token in a better way
         val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
@@ -369,6 +371,7 @@ class MainActivity : AppCompatActivity() {
 
         memversesCall.enqueue(object : Callback<MemverseResponse> {
             override fun onResponse(call: Call<MemverseResponse>, response: Response<MemverseResponse>) {
+                dialogFetch.hide()
                 Log.d(TAG, "memversesCall:Response code: " + response.code())
                 if (response.isSuccessful) {
                     val myVersesResponse = response.body()
@@ -387,6 +390,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<MemverseResponse>, t: Throwable) {
+                dialogFetch.hide()
                 // ** TODO Use Timber so that crashes in development don't get sent!!!
                 Log.e(TAG, "memversesCall Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
@@ -398,6 +402,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun makeRateNetworkCall(verseId: String, rating: String) {
         Log.d(TAG, "MV***** makeGetMemversesNetworkCall")
+        val dialog = indeterminateProgressDialog(message = "Please wait a bit…", title = "Rating verse")
+        progress_spinner.visibility = View.VISIBLE
         // TODO: Spinner when making rate netowrk call.
 
         // TODO: Handle auth token in a better way
@@ -408,6 +414,8 @@ class MainActivity : AppCompatActivity() {
 
         memversesCall.enqueue(object : Callback<RatePerformanceResponse> {
             override fun onResponse(call: Call<RatePerformanceResponse>, response: Response<RatePerformanceResponse>) {
+                progress_spinner.visibility = View.GONE
+                dialog.hide()
                 Log.d(TAG, "memversesCall:Response code: " + response.code())
                 if (response.isSuccessful) {
                     val myRatingResponse = response.body()
@@ -430,6 +438,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
                 Log.e(TAG, "ratePerormance Failure:${call.request()}${t.message}")
+                dialog.hide()
+                progress_spinner.visibility = View.GONE
                 showNetworkErrorToast()
 
             }
