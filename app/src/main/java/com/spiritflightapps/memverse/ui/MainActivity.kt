@@ -22,10 +22,7 @@ import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.utils.Prefs
 import io.doorbell.android.Doorbell
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.indeterminateProgressDialog
-import org.jetbrains.anko.share
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -122,24 +119,52 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle presses on the action bar menu items
+        var returnValue = true
         when (item.itemId) {
             R.id.menu_item_share -> {
                 share(currentVerse.toDisplayString())
                 trackShare(currentVerse.ref)
-                return true
             }
-            R.id.menu_item_logout -> {
-                logout()
-                return true
-            }
+            R.id.menu_item_logout -> logout()
             R.id.menu_item_feedback -> {
                 //TODO: MemverseAnalytics.track()
                 trackFeedbackOptionSelected()
                 showFeedbackDialog()
                 return true
             }
+            R.id.menu_verse_delete -> onDeleteMenuOptionSelected()
+            else -> returnValue = super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
+        return returnValue
+    }
+
+    private fun onDeleteMenuOptionSelected() {
+        trackDeleteOptionSelected()
+        alert("Are you sure?  (There's no undo option)", "Delete this verse?") {
+            yesButton { onDeleteYesSelected() }
+            noButton { onDeleteNoSelected() }
+        }.show()
+    }
+
+    private fun onDeleteYesSelected() {
+        trackDeleteYesSelected()
+        makeDeleteVerseNetworkCall(currentVerse.id)
+    }
+
+    private fun onDeleteNoSelected() {
+        trackDeleteNoSelected()
+    }
+
+    private fun trackDeleteYesSelected() {
+        mFirebaseAnalytics.logEvent("track_delete_verse_yes_selected", Bundle())
+    }
+
+    private fun trackDeleteNoSelected() {
+        mFirebaseAnalytics.logEvent("track_delete_verse_no_selected", Bundle())
+    }
+
+    private fun trackDeleteOptionSelected() {
+        mFirebaseAnalytics.logEvent("delete_option_selected", Bundle())
     }
 
     private fun trackFeedbackOptionSelected() {
@@ -192,6 +217,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun trackDoorbellDialogShown() {
         mFirebaseAnalytics.logEvent("doorbell_dialog_shown", Bundle())
+    }
+
+    private fun trackDeleteNetworkCallSuccess() {
+        mFirebaseAnalytics.logEvent("delete_network_call_success", Bundle())
     }
 
     private fun trackDoorbellFeedbackSent() {
@@ -460,6 +489,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun onDeleteNetworkCallSuccess(response: RatePerformanceResponse) {
+        //TODO: Clean this up
+        toast("This verse has been deleted.  Hopefully you meant to do that. If you want an 'are you sure' , please let me know with the feedback option from the upper right.")
+        trackDeleteNetworkCallSuccess()
+        makeGetMemversesNetworkCall()
+    }
+
     private fun makeDeleteVerseNetworkCall(verseId: String) {
         Log.d(TAG, "***** makeDeleteVersesNetworkCall")
 
@@ -476,22 +512,22 @@ class MainActivity : AppCompatActivity() {
                     val myRatingResponse = response.body()
 
                     if (myRatingResponse == null) {
-                        Log.e(TAG, "Rate performance response is null, which probably tells us nothing.")
+                        Log.e(TAG, "DeleteVersesNetworkCall response is null, which probably tells us nothing.")
                     } else {
-                        Log.d("MV-RatePerf", "myRatingResponse=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
+                        Log.d("MV-DeleteVersesCall", "DeleteVersesNetworkCall=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
                         onRatePerformanceNetworkCallSuccess(myRatingResponse)
                         // next button
                     }
                 } else {
                     //TODO: Could check other response codes or if have network connection
-                    Toast.makeText(this@MainActivity, "sorry, something went wrong with rating network call ", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@MainActivity, "sorry, something went wrong with DeleteVersesNetworkCall  ", Toast.LENGTH_LONG).show()
                     Log.e(TAG, "response code = ${response.code()}")
                     showNetworkErrorToast()
                 }
             }
 
             override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
-                Log.e(TAG, "ratePerormance Failure:${call.request()}${t.message}")
+                Log.e(TAG, "DeleteVersesNetworkCall Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
 
             }

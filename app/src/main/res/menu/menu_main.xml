@@ -24,7 +24,7 @@
         android:icon="@drawable/ic_delete_black_24dp"
         android:visible="false"
         android:title="@string/delete"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <!-- TODO: remove the logout later when it goes in navdrawer -->
     <!-- TODO: use james' art for login screen logos -->
 
