@@ -6,6 +6,7 @@ import android.annotation.TargetApi
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.TextUtils
@@ -45,12 +46,28 @@ class LoginActivity : AppCompatActivity() {
     // is easy to have BaseActivity that
     private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
 
+    private fun checkForTestDevice() {
+        if (isTestDevice()) {
+            mFirebaseAnalytics.setUserProperty("TestDevice", "True")
+            mFirebaseAnalytics.logEvent("test_device_start", Bundle())
+        } else {
+            mFirebaseAnalytics.setUserProperty("TestDevice", "False")
+            mFirebaseAnalytics.logEvent("test_device_false", Bundle())
+        }
+    }
+
+    private fun isTestDevice(): Boolean {
+        val testLabSetting = Settings.System.getString(contentResolver, "firebase.test.lab")
+        return "true" == testLabSetting
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         //TODO: Move to mainapplication
         Hawk.init(applicationContext).build()
+
+        checkForTestDevice()
 
         val authToken = Hawk.get(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
         if (authToken.isNotBlank()) {
