@@ -95,6 +95,9 @@ public interface MemverseApi {
 
 
     // Note for memverse API: /oauth only endpoint with no 1/ in it.
+
+    //Call<VerseResponse> lookupVerse
+    // e.g. https://www.memverse.com/1/verses/lookup?tl=NIV&bk=Colossians&ch=1&vs=17
 }
 /*
 translations - can use code for add verse

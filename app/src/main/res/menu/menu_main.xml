@@ -9,15 +9,12 @@
         app:showAsAction="always" />
 
 
-    <!-- make titles be add and elete -->
     <item
         android:id="@+id/menu_verse_add"
-        android:visible="false"
         android:icon="@drawable/ic_add"
-        android:title="@string/share"
+        android:title="@string/add"
         app:showAsAction="always" />
 
-    <!-- COULD USE same branch for add/remove/tweak, then make new repo with navdrawer and cleaner code-->
 
     <item
         android:id="@+id/menu_verse_delete"

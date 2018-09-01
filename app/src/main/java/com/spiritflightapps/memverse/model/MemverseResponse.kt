@@ -14,7 +14,7 @@ data class MemverseResponse(val count: Int = 0,
 data class Memverse(val id: String = "",
 
                     @SerializedName("verse")
-                    val verse: Verse = Verse(),
+                    val verse: Verse,
 
                     val ref: String = "",
                     val status: String = "",
@@ -29,8 +29,6 @@ data class Memverse(val id: String = "",
 
     fun toDisplayString() = "${verse.text} $ref ${verse.translation}"
 }
-
-data class Verse(val text: String = "", val translation: String = "")
 
 
 /*
