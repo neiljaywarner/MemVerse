@@ -74,11 +74,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRatingsInfoDialog() {
-
+        trackRatingsHelpDisplayed()
         // TODO: Ths might be fun to do through firebase aremote config
-        alert(RATINGS_INFO_TEXT, "Does this mostly make sense?") {
-            yesButton { onRatingsHelpYesSelected() }
-            noButton { onRatingsHelpNoSelected() }
+        alert(RATINGS_INFO_TEXT, "Ratings Help") {
+            okButton { }
         }.show()
     }
 
@@ -168,25 +167,8 @@ class MainActivity : AppCompatActivity() {
         trackDeleteNoSelected()
     }
 
-    private fun onRatingsHelpNoSelected() {
-        toast("We'll make a note of that, but please consider giving some specific feedback.")
-        trackRatingsHelpNoSelected()
-        showFeedbackDialog()
-    }
-
-    private fun onRatingsHelpYesSelected() {
-        toast("cool, thanks, have fun.")
-        trackRatingsHelpYesSelected()
-        showFeedbackDialog()
-    }
-
-
-    private fun trackRatingsHelpYesSelected() {
-        mFirebaseAnalytics.logEvent("rating_help_understood", Bundle())
-    }
-
-    private fun trackRatingsHelpNoSelected() {
-        mFirebaseAnalytics.logEvent("rating_help_confusing", Bundle())
+    private fun trackRatingsHelpDisplayed() {
+        mFirebaseAnalytics.logEvent("rating_help_displayed", Bundle())
     }
 
     private fun trackDeleteYesSelected() {
@@ -492,10 +474,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     //TODO: Could check other response codes or if have network connection
-                    Toast.makeText(this@MainActivity, "sorry, something went wrong with rating network call ", Toast.LENGTH_LONG).show()
+
+                    Toast.makeText(this@MainActivity, "Error with server, trying again. ", Toast.LENGTH_LONG).show()
                     // *** TODO: Report to crashlytics  specifically or something?
                     Log.e(TAG, "response code = ${response.code()}")
-                    showNetworkErrorToast()
                 }
             }
 
