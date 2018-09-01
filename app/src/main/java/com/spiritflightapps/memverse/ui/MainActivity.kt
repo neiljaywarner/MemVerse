@@ -21,6 +21,7 @@ import com.spiritflightapps.memverse.model.RatePerformanceResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.utils.Prefs
+import com.spiritflightapps.memverse.utils.RATINGS_INFO_TEXT
 import io.doorbell.android.Doorbell
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
@@ -43,8 +44,11 @@ class MainActivity : AppCompatActivity() {
         Hawk.init(applicationContext).build()
 
 
-
-
+        //Temporary, move it away from there.
+        button_show.setOnLongClickListener {
+            showRatingsInfoDialog()
+            true
+        }
 
         button_next.setOnClickListener {
             trackNext()
@@ -67,6 +71,15 @@ class MainActivity : AppCompatActivity() {
         button5.setOnClickListener { rate("5") }
 
 
+    }
+
+    private fun showRatingsInfoDialog() {
+
+        // TODO: Ths might be fun to do through firebase aremote config
+        alert(RATINGS_INFO_TEXT, "Does this mostly make sense?") {
+            yesButton { onRatingsHelpYesSelected() }
+            noButton { onRatingsHelpNoSelected() }
+        }.show()
     }
 
     private fun onShowClicked() {
@@ -155,12 +168,33 @@ class MainActivity : AppCompatActivity() {
         trackDeleteNoSelected()
     }
 
+    private fun onRatingsHelpNoSelected() {
+        toast("We'll make a note of that, but please consider giving some specific feedback.")
+        trackRatingsHelpNoSelected()
+        showFeedbackDialog()
+    }
+
+    private fun onRatingsHelpYesSelected() {
+        toast("cool, thanks, have fun.")
+        trackRatingsHelpYesSelected()
+        showFeedbackDialog()
+    }
+
+
+    private fun trackRatingsHelpYesSelected() {
+        mFirebaseAnalytics.logEvent("rating_help_understood", Bundle())
+    }
+
+    private fun trackRatingsHelpNoSelected() {
+        mFirebaseAnalytics.logEvent("rating_help_confusing", Bundle())
+    }
+
     private fun trackDeleteYesSelected() {
-        mFirebaseAnalytics.logEvent("track_delete_verse_yes_selected", Bundle())
+        mFirebaseAnalytics.logEvent("delete_verse_yes_selected", Bundle())
     }
 
     private fun trackDeleteNoSelected() {
-        mFirebaseAnalytics.logEvent("track_delete_verse_no_selected", Bundle())
+        mFirebaseAnalytics.logEvent("delete_verse_no_selected", Bundle())
     }
 
     private fun trackDeleteOptionSelected() {
