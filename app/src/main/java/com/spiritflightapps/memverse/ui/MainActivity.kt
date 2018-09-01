@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.BuildConfig
@@ -127,7 +128,6 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.menu_item_logout -> logout()
             R.id.menu_item_feedback -> {
-                //TODO: MemverseAnalytics.track()
                 trackFeedbackOptionSelected()
                 showFeedbackDialog()
                 return true
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onDeleteMenuOptionSelected() {
         trackDeleteOptionSelected()
-        alert("Are you sure?  (There's no undo option)", "Delete this verse?") {
+        alert("Are you sure you want to remove ${currentVerse.ref} from your list?", "Remove this verse?") {
             yesButton { onDeleteYesSelected() }
             noButton { onDeleteNoSelected() }
         }.show()
@@ -148,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onDeleteYesSelected() {
         trackDeleteYesSelected()
-        makeDeleteVerseNetworkCall(currentVerse.id)
+        makeDeleteVerseNetworkCall()
     }
 
     private fun onDeleteNoSelected() {
@@ -489,44 +489,52 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onDeleteNetworkCallSuccess(response: RatePerformanceResponse) {
-        //TODO: Clean this up
-        toast("This verse has been deleted.  Hopefully you meant to do that. If you want an 'are you sure' , please let me know with the feedback option from the upper right.")
+    private fun onDeleteNetworkCallSuccess(verseId: String) {
+        toast("This verse has removed from your list.")
+        markDeleted(verseId)
         trackDeleteNetworkCallSuccess()
+        currentVerseIndex = 0
         makeGetMemversesNetworkCall()
     }
 
-    private fun makeDeleteVerseNetworkCall(verseId: String) {
+    private fun markDeleted(verseId: String) {
+        val previousDeletedVerses: String = Prefs.getFromPrefs(this, Prefs.DELETED_VERSES_CSV, "")
+        val deletedVerses = "$previousDeletedVerses,$verseId"
+        Log.d("MV", "deletedVerses: $deletedVerses")
+        Prefs.saveToPrefs(this, Prefs.DELETED_VERSES_CSV, deletedVerses)
+    }
+
+    private fun makeDeleteVerseNetworkCall() {
         Log.d(TAG, "***** makeDeleteVersesNetworkCall")
 
+        val verseId = currentVerse.id
         // TODO: Handle auth token in a better way
         // reuse client, use insertKoin...
         val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.deleteVerse(verseId)
 
-        memversesCall.enqueue(object : Callback<RatePerformanceResponse> {
-            override fun onResponse(call: Call<RatePerformanceResponse>, response: Response<RatePerformanceResponse>) {
+        memversesCall.enqueue(object : Callback<Void> {
+            override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 Log.d(TAG, "memversesCall:Response code: " + response.code())
                 if (response.isSuccessful) {
-                    val myRatingResponse = response.body()
-
-                    if (myRatingResponse == null) {
-                        Log.e(TAG, "DeleteVersesNetworkCall response is null, which probably tells us nothing.")
+                    // a 204 no content on success is expected
+                    if (response.code() == 204) {
+                        onDeleteNetworkCallSuccess(verseId)
                     } else {
-                        Log.d("MV-DeleteVersesCall", "DeleteVersesNetworkCall=${myRatingResponse.status};nextText=${myRatingResponse.next_test}")
-                        onRatePerformanceNetworkCallSuccess(myRatingResponse)
-                        // next button
+                        Log.e(TAG, "DeleteVersesNetworkCall response should be 204 for success")
+                        Crashlytics.log("Error: Deleting caused a ${response.code()} when 204 no content was expected")
                     }
                 } else {
                     //TODO: Could check other response codes or if have network connection
+                    // a 404 for already deleted is expected.
                     Toast.makeText(this@MainActivity, "sorry, something went wrong with DeleteVersesNetworkCall  ", Toast.LENGTH_LONG).show()
                     Log.e(TAG, "response code = ${response.code()}")
                     showNetworkErrorToast()
                 }
             }
 
-            override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
+            override fun onFailure(call: Call<Void>, t: Throwable) {
                 Log.e(TAG, "DeleteVersesNetworkCall Failure:${call.request()}${t.message}")
                 showNetworkErrorToast()
 

@@ -21,8 +21,7 @@
 
     <item
         android:id="@+id/menu_verse_delete"
-        android:icon="@drawable/ic_delete_black_24dp"
-        android:visible="false"
+        android:icon="@drawable/ic_remove_black_24dp"
         android:title="@string/delete"
         app:showAsAction="ifRoom" />
     <!-- TODO: remove the logout later when it goes in navdrawer -->

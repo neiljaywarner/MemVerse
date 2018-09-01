@@ -53,9 +53,9 @@ public interface MemverseApi {
     Call<RatePerformanceResponse> addVerse(@Path("id") String verseId);
 
 
-    // **** TODO thsi one will be easy and Carina wants this one...
-    @DELETE("1/memverses/{user}")
-    Call<RatePerformanceResponse> deleteVerse(@Path("id") String verseId);
+    // Note: Returns 204 for success and 404 for already deleted/not found
+    @DELETE("1/memverses/{id}")
+    Call<Void> deleteVerse(@Path("id") String verseId);
 
 
     // https://www.memverse.com/api/index.html#!/memverse/showMemverses

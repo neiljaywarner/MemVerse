@@ -12,6 +12,9 @@ import android.preference.PreferenceManager;
 public class Prefs {
 
     public static final String EMAIL = "prefs_key_email";
+    public static final String DELETED_VERSES_CSV = "prefs_delete_csv";
+    // TODO: Consider using array or just when in db make sure ot mark them removed...
+    // easy to just mark them in the db as 'removed' when using db...
 
     /**
      * Called to save supplied value in shared preferences against given key.
