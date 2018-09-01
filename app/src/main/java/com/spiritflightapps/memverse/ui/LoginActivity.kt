@@ -162,7 +162,6 @@ class LoginActivity : AppCompatActivity() {
                     Prefs.saveToPrefs(this@LoginActivity, Prefs.EMAIL, email)
                     trackLogin()
                     val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
-                    startActivity(mainIntent)
 
 
                 } else {

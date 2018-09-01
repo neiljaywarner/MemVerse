@@ -2,6 +2,7 @@ package com.spiritflightapps.memverse.ui
 
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.text.Editable
 import android.text.TextWatcher
@@ -255,6 +256,14 @@ class MainActivity : AppCompatActivity() {
         mFirebaseAnalytics.logEvent("next", Bundle())
     }
 
+    private fun trackFetchRetry() {
+        mFirebaseAnalytics.logEvent("fetch_retry", Bundle())
+    }
+
+    private fun trackNoMoreRetries() {
+        mFirebaseAnalytics.logEvent("fetch_no_more_retries", Bundle())
+    }
+
     private fun trackPrevious() {
         mFirebaseAnalytics.logEvent("previous", Bundle())
     }
@@ -423,23 +432,24 @@ class MainActivity : AppCompatActivity() {
 
                     if (myVersesResponse == null) {
                         Log.e(TAG, "memverse network response is null")
+                        Crashlytics.logException(Exception("Memverse Fetch response is null"))
                     } else {
                         updateUi(myVersesResponse)
                     }
                 } else {
-                    //TODO: Could check other response codes or if have network connection
-                    Toast.makeText(this@MainActivity, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
-                    Log.e(TAG, "response code = ${response.code()}")
-                    showNetworkErrorToast()
+                    Crashlytics.logException(Exception("Fetch call network code ${response.code()} error ;url= ${call.request()}; "))
+                    Log.e(TAG, "***response code = ${response.code()}")
+                    onFetchNetworkError()
                 }
             }
 
             override fun onFailure(call: Call<MemverseResponse>, t: Throwable) {
                 dialogFetch.hide()
                 // ** TODO Use Timber so that crashes in development don't get sent!!!
-                Log.e(TAG, "memversesCall Failure:${call.request()}${t.message}")
-                showNetworkErrorToast()
-
+                val errorMessage = "***memverses fetch Call  Failure:${call.request()}${t.message}"
+                Log.e(TAG, errorMessage)
+                Crashlytics.logException(Exception(errorMessage))
+                onFetchNetworkError()
             }
         })
 
@@ -474,22 +484,38 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     //TODO: Could check other response codes or if have network connection
-
-                    Toast.makeText(this@MainActivity, "Error with server, trying again. ", Toast.LENGTH_LONG).show()
                     // *** TODO: Report to crashlytics  specifically or something?
-                    Log.e(TAG, "response code = ${response.code()}")
+                    Log.e(TAG, "******response code = ${response.code()}")
+                    Crashlytics.logException(Exception("Rate call error; network code ${response.code()}"))
+                    showNetworkErrorToast()
                 }
             }
 
             override fun onFailure(call: Call<RatePerformanceResponse>, t: Throwable) {
-                Log.e(TAG, "ratePerormance Failure:${call.request()}${t.message}")
+                Log.e(TAG, "ratePerformance Failure:${call.request()}${t.message}")
+                Crashlytics.logException(Exception("Rate onFailure ${t.message}"))
+
                 dialog.hide()
                 progress_spinner.visibility = View.GONE
-                showNetworkErrorToast()
+                onFetchNetworkError()
 
             }
         })
 
+    }
+
+    var numFetchErrorsInARow = 0
+    private fun onFetchNetworkError() {
+        numFetchErrorsInARow++
+        showNetworkErrorToast()
+        if (numFetchErrorsInARow < 3) {
+            trackFetchRetry()
+            val handler = Handler()
+            // just wait a half a second.
+            handler.postDelayed({ makeGetMemversesNetworkCall() }, 500)
+        } else {
+            trackNoMoreRetries()
+        }
     }
 
     private fun onRatePerformanceNetworkCallSuccess(myRatingResponse: RatePerformanceResponse) {
@@ -561,7 +587,7 @@ class MainActivity : AppCompatActivity() {
 
 
     fun showNetworkErrorToast() =
-            Toast.makeText(this, "sorry, something went wrong with network call ", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Sorry,  something went wrong with network call; if it keeps happening please logout and log back in and try again ", Toast.LENGTH_LONG).show()
 
     private fun showNoVersesToast() =
             Toast.makeText(this, "Please go to memverse.com and add verses. thanks!", Toast.LENGTH_LONG).show()
