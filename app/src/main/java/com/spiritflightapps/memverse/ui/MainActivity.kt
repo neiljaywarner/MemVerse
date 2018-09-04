@@ -21,6 +21,7 @@ import com.spiritflightapps.memverse.model.MemverseResponse
 import com.spiritflightapps.memverse.model.RatePerformanceResponse
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
+import com.spiritflightapps.memverse.utils.Analytics
 import com.spiritflightapps.memverse.utils.Prefs
 import com.spiritflightapps.memverse.utils.RATINGS_INFO_TEXT
 import io.doorbell.android.Doorbell
@@ -37,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     // put in baseactivity or mainapplication
     private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
+    private val userAlreadyAcknowledgeRatingsHelp by lazy { Prefs.getFromPrefs(this, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +46,12 @@ class MainActivity : AppCompatActivity() {
         //TODO: Move to mainapplication
         Hawk.init(applicationContext).build()
 
+        Log.e("NJW", "useralreadyack=$userAlreadyAcknowledgeRatingsHelp")
 
-        //Temporary, move it away from there.
-        button_show.setOnLongClickListener {
-            showRatingsInfoDialog()
-            true
-        }
+        showRatingButtonsIfNeeded()
 
         button_next.setOnClickListener {
+            showRatingsInfoDialogIfNeeded()
             trackNext()
             gotoNextVerse()
         }
@@ -74,12 +74,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun showRatingsInfoDialog() {
+    private fun showRatingButtonsIfNeeded() {
+        if (userAlreadyAcknowledgeRatingsHelp) {
+            viewGroupRatings.visibility = View.VISIBLE
+        } else {
+            viewGroupRatings.visibility = View.GONE
+        }
+    }
+
+    private fun showRatingsInfoDialogIfNeeded() {
+        if (userAlreadyAcknowledgeRatingsHelp) {
+            return
+        }
+
         trackRatingsHelpDisplayed()
-        // TODO: Ths might be fun to do through firebase aremote config
+        // TODO: Ths text be fun to do through firebase remote config one day
         alert(RATINGS_INFO_TEXT, "Ratings Help") {
-            okButton { }
+            okButton { onRatingsHelpAcknowledged() }
         }.show()
+    }
+
+    fun onRatingsHelpAcknowledged() {
+        viewGroupRatings.visibility = View.VISIBLE
+        Prefs.saveToPrefs(this.ctx, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, true)
     }
 
     private fun onShowClicked() {
@@ -143,8 +160,8 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_item_feedback -> {
                 trackFeedbackOptionSelected()
                 showFeedbackDialog()
-                return true
             }
+            R.id.menu_verse_add -> onAddMenuOptionSelected()
             R.id.menu_verse_delete -> onDeleteMenuOptionSelected()
             else -> returnValue = super.onOptionsItemSelected(item)
         }
@@ -158,6 +175,8 @@ class MainActivity : AppCompatActivity() {
             noButton { onDeleteNoSelected() }
         }.show()
     }
+
+    private fun onAddMenuOptionSelected() = startActivity(intentFor<AddVerseActivity>())
 
     private fun onDeleteYesSelected() {
         trackDeleteYesSelected()
@@ -341,9 +360,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (currentVerse.verse.text.approximatelyEquals(enteredString)) {
-                    title = "Correct! Good job"
-                    Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
-
+                    onVerseCorrect()
                 }
             }
 
@@ -357,6 +374,14 @@ class MainActivity : AppCompatActivity() {
 
         })
         // TODO: Kotlin magic to the above
+    }
+
+    private fun onVerseCorrect() {
+        Analytics.trackEvent(Analytics.LEARNING_VERSE_CORRECT, currentVerse.ref)
+        title = "Correct! Good job"
+        Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
+        viewGroupRatings.visibility = View.VISIBLE
+        showRatingsInfoDialogIfNeeded()
     }
 
     lateinit var memverses: List<Memverse>
@@ -383,7 +408,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateButtonUi() {
-        viewGroupRatings.visibility = View.VISIBLE
         Log.d("NJWMV", "currentIndex=$currentVerseIndex; lastIndex=${memverses.lastIndex}")
         if (currentVerseIndex == memverses.lastIndex) {
             button_next.visibility = View.INVISIBLE

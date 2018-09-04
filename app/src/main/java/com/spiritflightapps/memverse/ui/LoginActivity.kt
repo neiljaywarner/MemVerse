@@ -3,7 +3,6 @@ package com.spiritflightapps.memverse.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -15,6 +14,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
@@ -25,6 +25,7 @@ import com.spiritflightapps.memverse.network.TwitterAuthUtils
 import com.spiritflightapps.memverse.utils.Prefs
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.browse
+import org.jetbrains.anko.intentFor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +53,6 @@ class LoginActivity : AppCompatActivity() {
             mFirebaseAnalytics.logEvent("test_device_start", Bundle())
         } else {
             mFirebaseAnalytics.setUserProperty("TestDevice", "False")
-            mFirebaseAnalytics.logEvent("test_device_false", Bundle())
         }
     }
 
@@ -72,10 +72,8 @@ class LoginActivity : AppCompatActivity() {
         val authToken = Hawk.get(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
         if (authToken.isNotBlank()) {
             ServiceGenerator.setPasswordAuthToken(authToken)
-
-            // TODO: newIntent pattern
-            val mainIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainIntent)
+            trackAutoLogin()
+            startActivity(intentFor<MainActivity>())
             finish()
             return
         }
@@ -177,34 +175,46 @@ class LoginActivity : AppCompatActivity() {
 
                     Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, authToken)
                     Prefs.saveToPrefs(this@LoginActivity, Prefs.EMAIL, email)
-                    trackLogin()
-                    val mainIntent = Intent(this@LoginActivity, MainActivity::class.java)
-
-
+                    trackLoginSuccess()
+                    startActivity(intentFor<MainActivity>())
                 } else {
+                    trackLoginNot200()
                     //TODO: Consider reporting to analytics if this happens and user has connectivity, not airplane mode, etc.
                     Toast.makeText(this@LoginActivity, "sorry, something went wrong with network call; please try again ", Toast.LENGTH_LONG).show()
 
                     Log.e(TAG, "Response invalid, check consumer key/secret combination if 403")
+                    Crashlytics.logException(Exception("Login fail: code=${response.code()}"))
                 }
 
 
             }
 
             override fun onFailure(call: Call<BearerTokenResponse>, t: Throwable) {
-                Log.e(TAG, "bearerTokenCall Failure:${call.request()} ${t.message}")
-
+                trackLoginFail()
+                Crashlytics.log("login call onFailure; could be bad username/pass ${call.request()} ${t.message}")
                 showProgress(false)
                 Snackbar.make(button_signin, "Can't login with these credentials; please check username/password combination.", Snackbar.LENGTH_LONG).show()
             }
         })
     }
 
-    private fun trackLogin() {
+    private fun trackLoginSuccess() {
         val bundle = Bundle()
         //todo: use bundleOf in ktx
         bundle.putString(FirebaseAnalytics.Param.METHOD, "regular")
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.LOGIN, bundle)
+    }
+
+    private fun trackAutoLogin() {
+        mFirebaseAnalytics.logEvent("autologin", Bundle())
+    }
+
+    private fun trackLoginNot200() {
+        mFirebaseAnalytics.logEvent("login_fail_not_200", Bundle())
+    }
+
+    private fun trackLoginFail() {
+        mFirebaseAnalytics.logEvent("login_fail", Bundle())
     }
 
     private fun trackSignup() {
@@ -219,8 +229,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        //TODO: Replace this with your own logic
-        return password.length > 4
+        return password.length > 6
     }
 
     /**

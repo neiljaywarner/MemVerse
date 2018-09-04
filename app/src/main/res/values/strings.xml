@@ -23,4 +23,31 @@
     <string name="not_a_member">Not a member?</string>
     <string name="sign_up">Sign up</string>
     <string name="delete">Delete</string>
+    <string name="translations_list">
+        \"New International Version (1984)\" - \"NIV\"
+        \n\"King James Version (Modernized/1987)\" - \"KJV\"
+        \n\"New International Version (2011)\" - \"NNV\"
+        \n\"New Living Translation (2007)\" - \"NLT\"
+        \n\"Amplified Bible (Classic Edition) (1987)\" - \"AMP\"
+        \n\"Contemporary English Version (1995)\" - \"CEV\"
+        \n\"Easy-to-Read Version (2006)\" - \"ERV\"
+        \n\"English Standard Version (2011)\" - \"ESV\"
+        \n\"God\'s Word Translation (1995)\" - \"GW\"
+        \n\"Good News Translation (1992)\" - \"GNT\"
+        \n\"Holman Christian Standard Bible (2009)\" - \"HCS\"
+        \n\"New American Standard Bible (1995)\" - \"NAS\"
+        \n\"New Century Version (2005)\" - \"NCV\"
+        \n\"New International Reader\'s Version (1998)\" - \"IRV\"
+        \n\"New King James Version (1982)\" - \"NKJ\"
+        \n\"New Revised Standard Version (1989)\" - \"NRS\"
+        \n\"The Message (2002)\" - \"MSG\"
+        \n\"Authorized King James Version (1769)\" - \"AKJ\"
+        \n\"New Living Translation (2015)\" - \"NLT15\"
+        \n\"English Standard Version (2007)\" - \"ESV07\"
+        \n\"Darby Translation\" - \"DTL\"</string>
+    <string name="add_verse">Add Verse</string>
+    <string name="chapter">Chap</string>
+    <string name="book">Book</string>
+    <string name="verse">Verse</string>
+    <string name="translations">Select a translation</string>
 </resources>

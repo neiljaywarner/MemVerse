@@ -10,12 +10,10 @@
 
 
     <item
-        android:visible="false"
         android:id="@+id/menu_verse_add"
         android:icon="@drawable/ic_add"
         android:title="@string/add"
         app:showAsAction="always" />
-
 
     <item
         android:id="@+id/menu_verse_delete"

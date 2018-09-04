@@ -6,17 +6,19 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- TODO: use backup xml re: GCM -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:name=".MVApplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.LoginActivity"
-            android:theme="@style/LoginScreen"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/LoginScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,6 +37,7 @@
             </intent-filter>
             -->
         </activity>
+        <activity android:name=".ui.AddVerseActivity"></activity>
     </application>
 
 </manifest>

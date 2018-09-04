@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addverse"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".ui.ui.addverse.AddVerseFragment">
+
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- TODO: https://material.io/develop/android/components/text-input-layout/ -->
+
+        <android.support.design.widget.TextInputLayout
+            android:hint="@string/book"
+            android:layout_width="105dp"
+            android:layout_height="wrap_content">
+
+            <AutoCompleteTextView
+                android:id="@+id/autocomplete_book"
+                tools:text="Revelation"
+                android:inputType="text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="LabelFor" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:hint="@string/chapter"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edit_chapter"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:nextFocusForward="@id/edit_verse"
+                android:nextFocusRight="@id/edit_verse"
+                tools:text="119"
+                android:inputType="number"
+                android:imeOptions="actionNext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
+
+
+        <TextView
+            android:text=":"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+
+        <android.support.design.widget.TextInputLayout
+            android:hint="@string/verse"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                tools:text="110"
+                android:id="@+id/edit_verse"
+
+                android:singleLine="true"
+                android:maxLines="1"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- TODO: User's default translation... rather than just shardpref -->
+        <TextView
+            android:id="@+id/text_translation_abbreviation"
+            android:text="NIV"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_add"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textAllCaps="true"
+        android:layout_marginTop="12dp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/add"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:background="@color/medium_green" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/medium_green" />
+
+    <android.support.design.widget.TextInputLayout
+        android:hint="@string/translations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <AutoCompleteTextView
+            android:id="@+id/autocomplete_translation"
+            android:inputType="text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="LabelFor" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+</LinearLayout>

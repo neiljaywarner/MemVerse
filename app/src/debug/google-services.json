@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "633603071053",
+    "firebase_url": "https://memverse-809c7.firebaseio.com",
+    "project_id": "memverse-809c7",
+    "storage_bucket": "memverse-809c7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:633603071053:android:c15da9565fc5b468",
+        "android_client_info": {
+          "package_name": "com.spiritflightapps.memverse.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "633603071053-lbvakvfcfqd9dih67cq0o39ceigh0rif.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.spiritflightapps.memverse",
+            "certificate_hash": "bd07e3d079c70fc3d6e84bf0eef6aeb6f95f3c4b"
+          }
+        },
+        {
+          "client_id": "633603071053-1o341fl8ljmhnt17u19keqrbiv03qhap.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwEtFxCNr5Zc-IUDPwAG3a71N8qDW9OOU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "633603071053-1o341fl8ljmhnt17u19keqrbiv03qhap.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
