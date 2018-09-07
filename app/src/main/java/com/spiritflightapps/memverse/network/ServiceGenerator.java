@@ -1,6 +1,7 @@
 package com.spiritflightapps.memverse.network;
 
 
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory;
 import com.spiritflightapps.memverse.BuildConfig;
 
 import java.io.IOException;
@@ -35,15 +36,21 @@ public class ServiceGenerator {
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
-    public static <S> S createService(Class<S> serviceClass) {
-        return createService(serviceClass, null);
-    }
+    private static Retrofit.Builder coroutineBuilder =
+            new Retrofit.Builder()
+                    .baseUrl(API_BASE_URL)
+                    .addCallAdapterFactory(CoroutineCallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create());
 
-    public static <S> S createPasswordAuthService(Class<S> serviceClass) {
+    public static <S> S createService(Class<S> serviceClass) {
         return createService(serviceClass, sPasswordAuthToken);
     }
 
-    public static <S> S createService(Class<S> serviceClass, final String authToken) {
+    public static <S> S createDeferredService(Class<S> serviceClass) {
+        return createService(serviceClass, sPasswordAuthToken);
+    }
+
+    private static <S> S createService(Class<S> serviceClass, final String authToken) {
         if (authToken != null) {
             httpClient.addInterceptor(new Interceptor() {
                 @Override
@@ -71,6 +78,37 @@ public class ServiceGenerator {
         Retrofit retrofit = builder.client(client).build();
         return retrofit.create(serviceClass);
     }
+
+    private static <S> S createDeferredService(Class<S> serviceClass, final String authToken) {
+        if (authToken != null) {
+            httpClient.addInterceptor(new Interceptor() {
+                @Override
+                public Response intercept(Interceptor.Chain chain) throws IOException {
+                    Request original = chain.request();
+
+                    // Request customization: add request headers
+                    Request.Builder requestBuilder = original.newBuilder()
+                            .header("Authorization", "Bearer " + authToken)
+                            .method(original.method(), original.body());
+
+                    Request request = requestBuilder.build();
+                    return chain.proceed(request);
+                }
+            });
+        }
+
+        if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+            httpClient.addInterceptor(logging);
+        }
+
+        OkHttpClient client = httpClient.build();
+        Retrofit retrofit = coroutineBuilder.client(client).build();
+        return retrofit.create(serviceClass);
+    }
+
+
 
     /**
      * Create Retrofit2 service that can be used to get BearerKey

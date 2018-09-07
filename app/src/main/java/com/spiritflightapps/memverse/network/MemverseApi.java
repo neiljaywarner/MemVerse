@@ -3,7 +3,9 @@ package com.spiritflightapps.memverse.network;
 
 import com.spiritflightapps.memverse.model.MemverseResponse;
 import com.spiritflightapps.memverse.model.RatePerformanceResponse;
+import com.spiritflightapps.memverse.model.VerseResponse;
 
+import kotlinx.coroutines.experimental.Deferred;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -49,8 +51,9 @@ public interface MemverseApi {
     //https://www.memverse.com/api/index.html#!/memverse/createMemverse
     // with id 'long' field as the only param but paramtype path
     // JUST LIKE RECORD RATING except with POST woo hoo
-    @POST("1/memverses/{id}")
-    Call<RatePerformanceResponse> addVerse(@Path("id") String verseId);
+    @POST("1/memverses")
+    Deferred<RatePerformanceResponse> addVerse(@Body String id);
+    // 1/memverses?id=58
 
 
     // Note: Returns 204 for success and 404 for already deleted/not found
@@ -98,6 +101,12 @@ public interface MemverseApi {
 
     //Call<VerseResponse> lookupVerse
     // e.g. https://www.memverse.com/1/verses/lookup?tl=NIV&bk=Colossians&ch=1&vs=17
+    @GET("/1/verses/lookup")
+    Deferred<VerseResponse> lookupVerse(@Query("tl") String translation,
+                                        @Query("bk") String book,
+                                        @Query("ch") String chapter,
+                                        @Query("vs") String verse
+    );
 }
 /*
 translations - can use code for add verse

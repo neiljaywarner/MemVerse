@@ -82,6 +82,8 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
 
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    implementation "org.jetbrains.anko:anko-coroutines:$anko_version"
+
 
     // TODO: Clean up and modularize securesharedprefs stuff
     implementation "com.orhanobut:hawk:2.0.1"
@@ -89,9 +91,16 @@ dependencies {
     //doorbell.io for easy, free/freeish user feedback
     implementation 'io.doorbell:android-sdk:0.2.8@aar'
 
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
+
 
 
 
 }
 
 apply plugin: 'com.google.gms.google-services'
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

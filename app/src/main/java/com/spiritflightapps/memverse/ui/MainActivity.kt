@@ -394,7 +394,7 @@ class MainActivity : AppCompatActivity() {
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
         // TODO: Fix the sort date, i don't think it's quite right]
         // todo: make it by default notquiz u for future dates
-        val versesNotPending = memverseResponse.verses.filterNot { it.status == "Pending" }
+        val versesNotPending = memverseResponse.verses.filterNot { it -> it.status == "Pending" }
         memverses = versesNotPending.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
 
         if (memverses.isNotEmpty()) {
@@ -443,7 +443,7 @@ class MainActivity : AppCompatActivity() {
         val dialogFetch = indeterminateProgressDialog(message = "Please wait a bit…", title = "Fetching verses")
 
         // TODO: Handle auth token in a better way
-        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
+        val memVersesApi = ServiceGenerator.createService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.fetchMemverses()
 
@@ -487,7 +487,7 @@ class MainActivity : AppCompatActivity() {
 
         // TODO: Handle auth token in a better way
         // reuse client, use insertKoin...
-        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
+        val memVersesApi = ServiceGenerator.createService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.ratePerformance(verseId, rating)
 
@@ -576,7 +576,7 @@ class MainActivity : AppCompatActivity() {
         val verseId = currentVerse.id
         // TODO: Handle auth token in a better way
         // reuse client, use insertKoin...
-        val memVersesApi = ServiceGenerator.createPasswordAuthService(MemverseApi::class.java)
+        val memVersesApi = ServiceGenerator.createService(MemverseApi::class.java)
 
         val memversesCall = memVersesApi.deleteVerse(verseId)
 
