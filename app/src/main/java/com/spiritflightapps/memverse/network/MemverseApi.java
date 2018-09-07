@@ -52,8 +52,8 @@ public interface MemverseApi {
     // with id 'long' field as the only param but paramtype path
     // JUST LIKE RECORD RATING except with POST woo hoo
     @POST("1/memverses")
-    Deferred<RatePerformanceResponse> addVerse(@Body String id);
-    // 1/memverses?id=58
+    Deferred<RatePerformanceResponse> addVerse(@Body MemverseAddRequest idRequest);
+    // 1/memverses?id=58?? use query with post?  swagger says body.
 
 
     // Note: Returns 204 for success and 404 for already deleted/not found

@@ -16,7 +16,8 @@ object Analytics {
     const val ADD_VERSE_LOOKUP_FAIL = "add_verse_lookup_fail"
     const val ADD_VERSE_YES = "add_verse_yes"
     const val ADD_VERSE_NO = "add_verse_no"
-
+    const val LOOKUP_VERSE_SERVER_FAULT: String = "lookup_verse_server_fault"
+    const val LOOKUP_VERSE_USER_FAULT = "lookup_verse_user_fault"
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
     fun trackEvent(eventName: String, ref: String) = trackEvent(eventName, hashMapOf(Pair("ref", ref)))

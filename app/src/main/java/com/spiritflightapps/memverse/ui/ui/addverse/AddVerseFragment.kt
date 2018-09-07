@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import com.crashlytics.android.Crashlytics
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Verse
+import com.spiritflightapps.memverse.network.MemverseAddRequest
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
 import com.spiritflightapps.memverse.utils.Analytics
@@ -116,9 +117,9 @@ class AddVerseFragment : Fragment() {
 
     private fun makeLookupVerseAsyncNetworkCall(ctx: Context, book: String, chapter: String, verseNumber: String, translation: String) = launch(UI) {
         // TODO: Change from adding verse to just a refresh dialog
-        Log.e("MV", "in makeLookupVerseAsyncNetworkCAll, abot to show spinner, can we do that?= ")
-        //val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
-        //spinner.show()
+        Log.e("MV", "in makeLookupVerseAsyncNetworkCAll, abot to show spinner ")
+        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
+        spinner.show()
 
         try {
             Log.e("MV", "Agout to create deferred service")
@@ -134,19 +135,21 @@ class AddVerseFragment : Fragment() {
 
             val verse = response.verse
             if (verse == null) {
-                Log.e("NJW-MV", "verse is null")
-                onAddVerseFail(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verse"))
+                Log.e("NJW-MV", "verse is null; maybe wrong chapt/verse")
+                throw(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verseNumber"))
+                //onVerseLookupFail(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verseNumber"))
             } else {
                 Log.d("MV-MV", "verseId=${verse.id}")
                 onVerseLookupSuccess(verse)
             }
 
         } catch (e: Exception) {
+            Log.e("NJWMV", "***in catch ${e.localizedMessage}")
+
             e.printStackTrace()
-            Log.e("NJWMV", e.localizedMessage)
             onVerseLookupFail(e)
         } finally {
-            //spinner.hide()
+            spinner.hide()
         }
 
     }
@@ -159,8 +162,18 @@ class AddVerseFragment : Fragment() {
 }
      */
     private fun onVerseLookupFail(e: Exception) {
+        Log.e("NJWMV-", "onVerseLookupFail ${e.localizedMessage}")
         Analytics.trackEvent(Analytics.ADD_VERSE_LOOKUP_FAIL)
-        Crashlytics.logException(e)
+        // we could change this to yes/no
+        text_translation_abbreviation.context.alert("Verse lookup failed; could this be an invalid book/chapter verse combination like James 10:99") {
+            yesButton { Analytics.trackEvent(Analytics.LOOKUP_VERSE_USER_FAULT) }
+            noButton {
+                Analytics.trackEvent(Analytics.LOOKUP_VERSE_SERVER_FAULT, e.localizedMessage)
+
+                Crashlytics.log("User said 'no', it wasn't them")
+                Crashlytics.logException(e)
+            }
+        }.show()
 
         //val context = text_translation_abbreviation.context
         //context.alert("Lookup verse failed.could you have picked invalid book/chapter/verse combination").show()
@@ -169,7 +182,7 @@ class AddVerseFragment : Fragment() {
         // yes, it has 1189 entries, one for each chapter
         // so this would work.
 
-        // TODO: we need add by ref for share in anyway.
+        // TODO: we need add by ref for share in anyway.onVerseLookupFail
         // could run this endpoint the first time add verse screen is selected.
         // or ebetter yet, the first time the app is opened, but not necessarily with splash screen
         // never needs updated.
@@ -198,12 +211,15 @@ class AddVerseFragment : Fragment() {
         val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Adding verse")
         spinner.show()
 
-        val result = memVersesApi.addVerse(verse.id)
+        /// status says 201 creatd..
+        // eg 2018-09-07 01:58:22.417 8533-8582/com.spiritflightapps.memverse.debug D/OkHttp: {"response":{"id":2168610,"user_id":1354,"efactor":"2.0","test_interval":1,"rep_n":1,"next_test":"2018-09-06","status":"Pending","prev_verse":null,"ref_interval":1,"next_ref_test":null,"passage_id":554204,"subsection":null,"ref":"Gen 1:22","verse":{"id":2063,"book":"Genesis","chapter":1,"versenum":22,"translation":"NIV","text":"God blessed them and said, \"Be fruitful and increase in number and fill the water in the seas, and let the birds increase on the earth.\"","book_index":1}}}
+
+        val result = memVersesApi.addVerse(MemverseAddRequest(verse.id.toString()))
+
+
         try {
             val response = result.await()
-            val next_test = response.next_test
 
-            Log.d("MV-AV", "nextTest=$next_test")
             addVerseSuccess()
         } catch (e: Exception) {
             //TODO: utilize body and response code (?)
@@ -227,7 +243,7 @@ class AddVerseFragment : Fragment() {
     }
 
     private fun onAddVerseFail(e: Exception) {
-        Log.e("NJWMV", e.localizedMessage)
+        Log.e("NJWMV-  ", "onAddVerseFail ${e.localizedMessage}")
 
         Analytics.trackEvent(Analytics.ADD_VERSE_FAIL)
         text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have") {
