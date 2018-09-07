@@ -246,9 +246,12 @@ class AddVerseFragment : Fragment() {
         Log.e("NJWMV-  ", "onAddVerseFail ${e.localizedMessage}")
 
         Analytics.trackEvent(Analytics.ADD_VERSE_FAIL)
-        text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have") {
+        text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have?") {
             okButton { }
         }
+        // TODO: use result
+        // result has reason
+        // 2018-09-07 02:28:48.023 9632-9734/com.spiritflightapps.memverse.debug D/OkHttp: {"error":"bad_request","error_description":"The data given to this server does not meet our criteria.","reason":"Already added previously"}
         //TODO: add ok buttons to them all.
         Crashlytics.log("add verse fail; could've already been there.")
         Crashlytics.logException(e)
