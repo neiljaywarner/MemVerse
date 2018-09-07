@@ -3,7 +3,7 @@ package com.spiritflightapps.memverse.model
 import com.google.gson.annotations.SerializedName
 
 data class VerseResponse(@SerializedName("response")
-                         val verse: Verse)
+                         val verse: Verse?)
 
 
 // NOTE: may want to be more carefu.

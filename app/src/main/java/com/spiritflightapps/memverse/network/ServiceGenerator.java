@@ -47,7 +47,7 @@ public class ServiceGenerator {
     }
 
     public static <S> S createDeferredService(Class<S> serviceClass) {
-        return createService(serviceClass, sPasswordAuthToken);
+        return createDeferredService(serviceClass, sPasswordAuthToken);
     }
 
     private static <S> S createService(Class<S> serviceClass, final String authToken) {

@@ -18,7 +18,8 @@ import com.spiritflightapps.memverse.utils.BOOKS_OF_BIBLE
 import com.spiritflightapps.memverse.utils.Prefs
 import com.spiritflightapps.memverse.utils.TRANSLATIONS_ABBREVIATIONS_TEXT
 import kotlinx.android.synthetic.main.add_verse_fragment.*
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.*
 
 
@@ -32,6 +33,9 @@ class AddVerseFragment : Fragment() {
     private lateinit var viewModel: AddVerseViewModel
 
     val memVersesApi = ServiceGenerator.createDeferredService(MemverseApi::class.java)
+
+    val memVersesApi2 = ServiceGenerator.createService(MemverseApi::class.java)
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -93,9 +97,9 @@ class AddVerseFragment : Fragment() {
     private fun addVerse() {
         //TODO: validate first based on a) is it too many chap/verse, more than in the book James 20:200
         // b) does the user already have it in their list?
-        val book = autocomplete_book.text.toString()
-        val chapter = edit_chapter.text.toString()
-        val verse = edit_verse.text.toString()
+        val book = autocomplete_book.text.toString().trim()
+        val chapter = edit_chapter.text.toString().trim()
+        val verse = edit_verse.text.toString().trim()
         Log.e("MV-NJW-AdddVerse", "$book $chapter:$verse ${text_translation_abbreviation.text}")
         val ref = "$book $chapter:$verse"
         val translation = text_translation_abbreviation.text.toString()
@@ -106,17 +110,21 @@ class AddVerseFragment : Fragment() {
         // they shludn't have to have a network call for that.
         // check via room..
 
-        makeLookupVerseAsyncNetworkCall(text_translation_abbreviation.context, book, chapter, verse, translation)
+        makeLookupVerseAsyncNetworkCall(text_translation_abbreviation.context, book.trim(), chapter, verse, translation)
 
     }
 
-    private fun makeLookupVerseAsyncNetworkCall(ctx: Context, book: String, chapter: String, verseNumber: String, translation: String) = async {
+    private fun makeLookupVerseAsyncNetworkCall(ctx: Context, book: String, chapter: String, verseNumber: String, translation: String) = launch(UI) {
         // TODO: Change from adding verse to just a refresh dialog
         Log.e("MV", "in makeLookupVerseAsyncNetworkCAll, abot to show spinner, can we do that?= ")
-        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
-        spinner.show()
+        //val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
+        //spinner.show()
 
         try {
+            Log.e("MV", "Agout to create deferred service")
+
+            val memVersesApi = ServiceGenerator.createDeferredService(MemverseApi::class.java)
+
             Log.e("MV", "Agout to make api call..")
             val result = memVersesApi.lookupVerse(translation, book, chapter, verseNumber)
             Log.e("MV", "Agout to await api call..")
@@ -125,13 +133,20 @@ class AddVerseFragment : Fragment() {
             Log.e("MV", "back from  api call..")
 
             val verse = response.verse
-            Log.d("MV-AV", "verseId=${verse.id}")
-            onVerseLookupSuccess(verse)
-            clearFields()
+            if (verse == null) {
+                Log.e("NJW-MV", "verse is null")
+                onAddVerseFail(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verse"))
+            } else {
+                Log.d("MV-MV", "verseId=${verse.id}")
+                onVerseLookupSuccess(verse)
+            }
+
         } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e("NJWMV", e.localizedMessage)
             onVerseLookupFail(e)
         } finally {
-            spinner.hide()
+            //spinner.hide()
         }
 
     }
@@ -145,8 +160,10 @@ class AddVerseFragment : Fragment() {
      */
     private fun onVerseLookupFail(e: Exception) {
         Analytics.trackEvent(Analytics.ADD_VERSE_LOOKUP_FAIL)
-        val context = text_translation_abbreviation.context
-        context.alert("Lookup verse failed.could you have picked invalid book/chapter/verse combination").show()
+        Crashlytics.logException(e)
+
+        //val context = text_translation_abbreviation.context
+        //context.alert("Lookup verse failed.could you have picked invalid book/chapter/verse combination").show()
         // TODO: could probably use
         // api endpoint /final_verses one time to save last chapter and verse of books in the Bible
         // yes, it has 1189 entries, one for each chapter
@@ -161,7 +178,7 @@ class AddVerseFragment : Fragment() {
     private fun onVerseLookupSuccess(verse: Verse) {
         Analytics.trackEvent(Analytics.ADD_VERSE_LOOKUP_SUCCESS, verse.ref)
         val context = text_translation_abbreviation.context
-        context.alert("${verse.text}?", "Remove this verse?") {
+        context.alert(verse.text, "Add this verse?") {
             yesButton { onAddVerseYes(verse) }
             noButton { onAddVerseNo(verse) }
         }.show()
@@ -177,8 +194,9 @@ class AddVerseFragment : Fragment() {
     // TODO: consider doing this to simplify network calls
     // but instead o fe.handleException, make that resource error like earlier.
     // https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
-    private fun makeAddVerseAsyncNetworkCall(ctx: Context, verse: Verse) = async {
+    private fun makeAddVerseAsyncNetworkCall(ctx: Context, verse: Verse) = launch(UI) {
         val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Adding verse")
+        spinner.show()
 
         val result = memVersesApi.addVerse(verse.id)
         try {
@@ -187,7 +205,6 @@ class AddVerseFragment : Fragment() {
 
             Log.d("MV-AV", "nextTest=$next_test")
             addVerseSuccess()
-            clearFields()
         } catch (e: Exception) {
             //TODO: utilize body and response code (?)
             /*
@@ -205,11 +222,18 @@ class AddVerseFragment : Fragment() {
 
     private fun addVerseSuccess() {
         Analytics.trackEvent(Analytics.ADD_VERSE_SUCCESS)
+        text_translation_abbreviation.context.alert("add verse success").show()
+        activity?.finish()
     }
 
     private fun onAddVerseFail(e: Exception) {
+        Log.e("NJWMV", e.localizedMessage)
+
         Analytics.trackEvent(Analytics.ADD_VERSE_FAIL)
-        text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have").show()
+        text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have") {
+            okButton { }
+        }
+        //TODO: add ok buttons to them all.
         Crashlytics.log("add verse fail; could've already been there.")
         Crashlytics.logException(e)
     }
