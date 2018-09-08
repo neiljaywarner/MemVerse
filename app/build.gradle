@@ -15,10 +15,11 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 75
+        versionCode 77
         // 70=0.37 = beta version; 73= version = 0.38 regular
         // 74 = 0.39 dev ; 75 = 0.39
         // 0.40 - Sep 3, 2018 with Add feature.
+        // 77 = 0.40
         versionName "0.40" 
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
