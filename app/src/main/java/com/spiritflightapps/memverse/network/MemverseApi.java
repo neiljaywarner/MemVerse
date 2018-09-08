@@ -1,6 +1,7 @@
 package com.spiritflightapps.memverse.network;
 
 
+import com.spiritflightapps.memverse.model.AddVerseResponse;
 import com.spiritflightapps.memverse.model.MemverseResponse;
 import com.spiritflightapps.memverse.model.RatePerformanceResponse;
 import com.spiritflightapps.memverse.model.VerseResponse;
@@ -52,7 +53,7 @@ public interface MemverseApi {
     // with id 'long' field as the only param but paramtype path
     // JUST LIKE RECORD RATING except with POST woo hoo
     @POST("1/memverses")
-    Deferred<RatePerformanceResponse> addVerse(@Body MemverseAddRequest idRequest);
+    Deferred<AddVerseResponse> addVerse(@Body MemverseAddRequest idRequest);
     // 1/memverses?id=58?? use query with post?  swagger says body.
 
 

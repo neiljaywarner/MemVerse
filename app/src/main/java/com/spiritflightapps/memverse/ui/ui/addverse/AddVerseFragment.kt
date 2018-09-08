@@ -22,6 +22,7 @@ import kotlinx.android.synthetic.main.add_verse_fragment.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.*
+import retrofit2.HttpException
 
 
 class AddVerseFragment : Fragment() {
@@ -31,12 +32,7 @@ class AddVerseFragment : Fragment() {
         const val TAG = "MV_AddVerseFragment"
     }
 
-    private lateinit var viewModel: AddVerseViewModel
-
-    val memVersesApi = ServiceGenerator.createDeferredService(MemverseApi::class.java)
-
-    val memVersesApi2 = ServiceGenerator.createService(MemverseApi::class.java)
-
+    val memVersesApi by lazy { ServiceGenerator.createDeferredService(MemverseApi::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
@@ -48,7 +44,6 @@ class AddVerseFragment : Fragment() {
 
         activity?.title = getString(R.string.add_verse)
 
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,13 +51,6 @@ class AddVerseFragment : Fragment() {
 
         autocomplete_book.apply {
             val array = BOOKS_OF_BIBLE.split(",").toTypedArray()
-            val adapter = ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, array)
-            setAdapter(adapter)
-            setOnItemClickListener { _, _, _, _ -> edit_chapter.requestFocus() }
-        }
-
-        autocomplete_translation.apply {
-            val array = TRANSLATIONS_ABBREVIATIONS_TEXT.split(",").toTypedArray()
             val adapter = ArrayAdapter<String>(context, android.R.layout.simple_dropdown_item_1line, array)
             setAdapter(adapter)
             setOnItemClickListener { _, _, _, _ -> edit_chapter.requestFocus() }
@@ -101,7 +89,7 @@ class AddVerseFragment : Fragment() {
         val book = autocomplete_book.text.toString().trim()
         val chapter = edit_chapter.text.toString().trim()
         val verse = edit_verse.text.toString().trim()
-        Log.e("MV-NJW-AdddVerse", "$book $chapter:$verse ${text_translation_abbreviation.text}")
+        Log.d("MV-NJW-AdddVerse", "$book $chapter:$verse ${text_translation_abbreviation.text}")
         val ref = "$book $chapter:$verse"
         val translation = text_translation_abbreviation.text.toString()
         Analytics.trackEvent(Analytics.ADD_VERSE_CLICK, "$ref $translation")
@@ -117,21 +105,15 @@ class AddVerseFragment : Fragment() {
 
     private fun makeLookupVerseAsyncNetworkCall(ctx: Context, book: String, chapter: String, verseNumber: String, translation: String) = launch(UI) {
         // TODO: Change from adding verse to just a refresh dialog
-        Log.e("MV", "in makeLookupVerseAsyncNetworkCAll, abot to show spinner ")
+        Log.d("MV", "in makeLookupVerseAsyncNetworkCAll, about to show spinner ")
         val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
         spinner.show()
 
         try {
-            Log.e("MV", "Agout to create deferred service")
 
-            val memVersesApi = ServiceGenerator.createDeferredService(MemverseApi::class.java)
-
-            Log.e("MV", "Agout to make api call..")
             val result = memVersesApi.lookupVerse(translation, book, chapter, verseNumber)
-            Log.e("MV", "Agout to await api call..")
 
             val response = result.await()
-            Log.e("MV", "back from  api call..")
 
             val verse = response.verse
             if (verse == null) {
@@ -143,6 +125,13 @@ class AddVerseFragment : Fragment() {
                 onVerseLookupSuccess(verse)
             }
 
+        } catch (httpException: HttpException) {
+            with(httpException) {
+                Log.e("NJW-MV", "httpcode=${code()} message=${message()}; ${response()}")
+                val request = response().raw().request().url().toString()
+                Crashlytics.log("url==$request")
+                onVerseLookupFail(httpException)
+            }
         } catch (e: Exception) {
             Log.e("NJWMV", "***in catch ${e.localizedMessage}")
 
@@ -151,23 +140,24 @@ class AddVerseFragment : Fragment() {
         } finally {
             spinner.hide()
         }
-
     }
 
+
     //TODO: Utilize failure responseBody with wrapper object
-    /*
-    {
-  "code": 0,
-  "message": "string"
+/*
+{
+"code": 0,
+"message": "string"
 }
-     */
+ */
+    //TODO: if get a bunch of "user fault" well, we could obviously disallow that b/c its easy to know w/o network call.
     private fun onVerseLookupFail(e: Exception) {
         Log.e("NJWMV-", "onVerseLookupFail ${e.localizedMessage}")
         Analytics.trackEvent(Analytics.ADD_VERSE_LOOKUP_FAIL)
         // we could change this to yes/no
-        text_translation_abbreviation.context.alert("Verse lookup failed; could this be an invalid book/chapter verse combination like James 10:99") {
-            yesButton { Analytics.trackEvent(Analytics.LOOKUP_VERSE_USER_FAULT) }
-            noButton {
+        text_translation_abbreviation.context.alert("Verse lookup failed; could this be an invalid book/chapter verse combination like James 10:99?") {
+            positiveButton("Yes") { Analytics.trackEvent(Analytics.LOOKUP_VERSE_USER_FAULT) }
+            negativeButton("No") {
                 Analytics.trackEvent(Analytics.LOOKUP_VERSE_SERVER_FAULT, e.localizedMessage)
 
                 Crashlytics.log("User said 'no', it wasn't them")
@@ -175,8 +165,7 @@ class AddVerseFragment : Fragment() {
             }
         }.show()
 
-        //val context = text_translation_abbreviation.context
-        //context.alert("Lookup verse failed.could you have picked invalid book/chapter/verse combination").show()
+
         // TODO: could probably use
         // api endpoint /final_verses one time to save last chapter and verse of books in the Bible
         // yes, it has 1189 entries, one for each chapter
@@ -205,10 +194,10 @@ class AddVerseFragment : Fragment() {
     }
 
     // TODO: consider doing this to simplify network calls
-    // but instead o fe.handleException, make that resource error like earlier.
-    // https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
+// but instead o fe.handleException, make that resource error like earlier.
+// https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
     private fun makeAddVerseAsyncNetworkCall(ctx: Context, verse: Verse) = launch(UI) {
-        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Adding verse")
+        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Adding ${verse.ref}")
         spinner.show()
 
         /// status says 201 creatd..
@@ -219,15 +208,28 @@ class AddVerseFragment : Fragment() {
 
         try {
             val response = result.await()
+            Log.d("MV-NJW***", "Added verse as ${response.newMemverse}")
 
-            addVerseSuccess()
+            addVerseSuccess(response.newMemverse.status)
+        } catch (httpException: HttpException) {
+            Log.e("NJW-MV***", " ${httpException.code()}; ${httpException.message()}")
+            if (httpException.code() == 400) {
+                Log.e("NJW-MV***", "400 error, maybe already in list")
+                Analytics.trackEvent(Analytics.ADD_VERSE_FAIL_400_MAYBE_IN_LIST)
+                ctx.alert("We were unable to add the verse - this might be a verse already in your list") {
+                    okButton { }
+                }.show()
+            } else {
+                Log.e("NJW-MV***", "not 400")
+                onAddVerseFail(httpException)
+            }
         } catch (e: Exception) {
             //TODO: utilize body and response code (?)
             /*
             {
-  "error": "not_found",
-  "error_description": "The requested resource could not be found."
-}
+    "error": "not_found",
+    "error_description": "The requested resource could not be found."
+    }
              */
             onAddVerseFail(e)
         } finally {
@@ -236,19 +238,27 @@ class AddVerseFragment : Fragment() {
 
     }
 
-    private fun addVerseSuccess() {
-        Analytics.trackEvent(Analytics.ADD_VERSE_SUCCESS)
-        text_translation_abbreviation.context.alert("add verse success").show()
-        activity?.finish()
+    private fun addVerseSuccess(status: String) {
+        if (status.equals("pending", ignoreCase = true)) {
+            Analytics.trackEvent(Analytics.ADD_VERSE_TO_PENDING)
+        } else {
+            Analytics.trackEvent(Analytics.ADD_VERSE_TO_LEARNING)
+        }
+        text_translation_abbreviation.context.alert("Verse added to $status") {
+            okButton { activity?.finish() }
+        }.show()
+
     }
+// don't worry about checkign if they already hae the verse b/c soon it will be in db.
+// and not many people have that many
 
     private fun onAddVerseFail(e: Exception) {
         Log.e("NJWMV-  ", "onAddVerseFail ${e.localizedMessage}")
 
         Analytics.trackEvent(Analytics.ADD_VERSE_FAIL)
-        text_translation_abbreviation.context.alert("Add verse fail could you have picked book/chapter/verse you already have?") {
+        text_translation_abbreviation.context.alert(title = "Unable to add verse", message = "Sever error; please try again later.") {
             okButton { }
-        }
+        }.show()
         // TODO: use result
         // result has reason
         // 2018-09-07 02:28:48.023 9632-9734/com.spiritflightapps.memverse.debug D/OkHttp: {"error":"bad_request","error_description":"The data given to this server does not meet our criteria.","reason":"Already added previously"}
@@ -262,18 +272,8 @@ class AddVerseFragment : Fragment() {
         Analytics.trackEvent(Analytics.ADD_VERSE_NO, verse)
     }
 
-    private fun clearFields() {
-        edit_chapter.setText("")
-        edit_verse.setText("")
-        autocomplete_book.setText("")
-    }
-
-
-    // TODO: Use this?
+// TODO: Use this?
 // https://medium.com/@raghunandan2005/retrofit2-and-koltin-coroutines-sample-938a6842b0a1
-
-
-
 
 
 }

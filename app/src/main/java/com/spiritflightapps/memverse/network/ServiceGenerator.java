@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ServiceGenerator {
     // https://www.memverse.com/oauth/token
-    public static final String API_BASE_URL = "https://www.memverse.com/";
+    private static final String API_BASE_URL = "https://www.memverse.com/";
     public static final String AUTH_TOKEN_PREFS_KEY = "pref_auth_token";
     private static String sPasswordAuthToken = "";
 
