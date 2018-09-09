@@ -528,7 +528,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    var numFetchErrorsInARow = 0
+    private var numFetchErrorsInARow = 0
     private fun onFetchNetworkError() {
         numFetchErrorsInARow++
         showNetworkErrorToast()

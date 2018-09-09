@@ -23,7 +23,7 @@ object Analytics {
 
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
-    fun trackEvent(eventName: String, ref: String) = trackEvent(eventName, hashMapOf(Pair("ref", ref)))
+    fun trackEvent(eventName: String, ref: String) = trackEvent(eventName, hashMapOf(Pair(FirebaseAnalytics.Param.ITEM_NAME, ref)))
 
     fun trackEvent(eventName: String, eventProperties: HashMap<String, String>? = null) {
         //trackEventToAppCenter(eventName, eventProperties) //track event to somewhere else, like testfairy

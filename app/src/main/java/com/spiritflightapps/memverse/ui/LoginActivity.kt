@@ -18,16 +18,15 @@ import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
-import com.spiritflightapps.memverse.network.BearerTokenResponse
-import com.spiritflightapps.memverse.network.PasswordTokenRequest
-import com.spiritflightapps.memverse.network.ServiceGenerator
-import com.spiritflightapps.memverse.network.TwitterAuthUtils
+import com.spiritflightapps.memverse.network.*
 import com.spiritflightapps.memverse.utils.Prefs
 import kotlinx.android.synthetic.main.activity_login.*
-import org.jetbrains.anko.browse
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.intentFor
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 
 /**
@@ -35,6 +34,17 @@ import retrofit2.Response
  */
 
 class LoginActivity : AppCompatActivity() {
+
+    val memverseBearerTokenApi by lazy {
+        ServiceGenerator.createBearerKeyService(
+                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
+    }
+
+    val memverseBearerDeferredApi by lazy {
+        ServiceGenerator.createBearerKeyDeferredService(
+                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
+    }
+
     companion object {
         private val TAG = LoginActivity::class.java.simpleName
     }
@@ -90,8 +100,10 @@ class LoginActivity : AppCompatActivity() {
         button_signin.setOnClickListener { attemptLogin() }
 
         button_signup.setOnClickListener {
-            trackSignup()
-            browse("https://www.memverse.com/users/sign_up")
+            //trackSignup()
+            // browse("https://www.memverse.com/users/sign_up")
+            note: basic idea works but need screen with password conf etc
+            //signupAsync(name, emmail, password)
         }
     }
 
@@ -150,11 +162,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login(email: String, password: String) {
         Log.d(TAG, "*** Retrieving bearer token.")
-        val memVerseApi = ServiceGenerator.createBearerKeyService(
-                TwitterAuthUtils.generateEncodedBearerTokenCredentials())
+
 
         val passwordTokenRequest = PasswordTokenRequest(username = email, password = password)
-        val bearerTokenCall = memVerseApi.getBearerToken(passwordTokenRequest)
+        val bearerTokenCall = memverseBearerTokenApi.getBearerToken(passwordTokenRequest)
         // TODO: Consider https://auth0.com/docs/api-auth/grant/authorization-code-pkce
 
         // also consider https://github.com/openid/AppAuth-Android
@@ -229,7 +240,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isPasswordValid(password: String): Boolean {
-        return password.length > 6
+        return password.length > 5
     }
 
     /**
@@ -259,6 +270,32 @@ class LoginActivity : AppCompatActivity() {
                         login_progress.visibility = if (show) View.VISIBLE else View.GONE
                     }
                 })
+    }
+
+
+    //*** ** testing signin
+    private fun signupAsync(name: String, email: String, password: String) = launch(UI) {
+        try {
+            //Log.e("NJW-MV", "in signupasync, abotu to get bearer token")
+            //Crashlytics.log("About to do get bearer token")
+            //val bearerTokenResponse = memverseBearerTokenApi.getBearerTokenDeferred(MemverseApi.GRANT_TYPE_CLIENT).await()
+            //val token = bearerTokenResponse.accessToken
+            //Log.e("NJW-MV", "in signupasync, token = $token")
+
+            Crashlytics.log("About to do signup api call")
+            Log.e("NJW-MV", "in signupasync, about to do api call")
+
+            val testUserRequest = RegisterUserRequest(RegisterUser(name, email, password))
+            val result = memverseBearerDeferredApi.signup(testUserRequest).await()
+            Log.d("NJW-MV", "signupresult = $result")
+        } catch (httpException: HttpException) {
+            Log.e("NJW-MV", "httpException in Signup - code=${httpException.code()}; msg = ${httpException.message()}")
+
+            Crashlytics.logException(httpException)
+        } catch (exception: Exception) {
+            Log.e("NJW-MV", "exception = ${exception.message}")
+            Crashlytics.logException(exception)
+        }
     }
 
 

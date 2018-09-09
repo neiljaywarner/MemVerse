@@ -4,6 +4,7 @@ package com.spiritflightapps.memverse.network;
 import com.spiritflightapps.memverse.model.AddVerseResponse;
 import com.spiritflightapps.memverse.model.MemverseResponse;
 import com.spiritflightapps.memverse.model.RatePerformanceResponse;
+import com.spiritflightapps.memverse.model.User;
 import com.spiritflightapps.memverse.model.VerseResponse;
 
 import kotlinx.coroutines.experimental.Deferred;
@@ -28,16 +29,22 @@ public interface MemverseApi {
     String GRANT_TYPE_CLIENT = "client_credentials";
 
     String GRANT_TYPE_PASSWORD = "password";
-    // TODO: See if this is advised against, see what they do in iOS..
 
     // also see
     //https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_understanding_username_password_oauth_flow.htm
 
 
-    // TODO: Convert to kotlin!!
     @FormUrlEncoded
     @POST("/oauth/token")
     Call<BearerTokenResponse> getBearerToken(@Field("grant_type") String grantType);
+
+
+    @FormUrlEncoded
+    @POST("/oauth/token")
+    Deferred<BearerTokenResponse> getBearerTokenDeferred(@Field("grant_type") String grantType);
+
+    @POST("1/users")
+    Deferred<User> signup(@Body RegisterUserRequest registerUserRequest);
 
     @POST("oauth/token")
     Call<BearerTokenResponse> getBearerToken(@Body PasswordTokenRequest passwordTokenRequest);
