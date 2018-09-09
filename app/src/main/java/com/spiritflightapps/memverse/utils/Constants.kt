@@ -24,7 +24,7 @@ const val BOOKS_OF_BIBLE = """
 const val TRANSLATIONS_ABBREVIATIONS_TEXT = """
 New International Version (1984) - NIV,
 King James Version (Modernized/1987) - KJV,
-NIV2011-New International Version (2011) - NNV,
+New International Version (2011) - NNV,
 New Living Translation (2007) - NLT,
 Amplified Bible (Classic Edition) (1987) - AMP,
 Contemporary English Version (1995) - CEV,
