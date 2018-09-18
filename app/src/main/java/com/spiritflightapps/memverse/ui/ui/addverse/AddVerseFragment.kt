@@ -77,8 +77,6 @@ class AddVerseFragment : Fragment() {
         Prefs.saveToPrefs(context, Prefs.LAST_TRANSLATION_SELECTED, abbreviation)
     }
 
-    // this might be a temporary technique
-    // as string like The Message (2002) - MSG
     fun getTranslationAbbreviation(translationDescription: String): String {
         return translationDescription.split("-")[1].trim()
     }
@@ -103,22 +101,25 @@ class AddVerseFragment : Fragment() {
 
     }
 
+    lateinit var exactRef: String
+
     private fun makeLookupVerseAsyncNetworkCall(ctx: Context, book: String, chapter: String, verseNumber: String, translation: String) = launch(UI) {
         // TODO: Change from adding verse to just a refresh dialog
         Log.d("MV", "in makeLookupVerseAsyncNetworkCAll, about to show spinner ")
-        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Looking up verse")
+        val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit...", title = "Looking up verse")
+        exactRef = "$book $chapter:$verseNumber $translation"
         spinner.show()
 
         try {
-
+            Crashlytics.log("making api call to lookup $exactRef")
             val result = memVersesApi.lookupVerse(translation, book, chapter, verseNumber)
 
             val response = result.await()
 
             val verse = response.verse
             if (verse == null) {
-                Log.e("NJW-MV", "verse is null; maybe wrong chapt/verse")
-                throw(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verseNumber"))
+                Log.e("NJW-MV", "verse is null; maybe wrong chapt/verse combination for $exactRef")
+                throw(Exception("Verse is null; probably non-existent book/chap/verse $exactRef"))
                 //onVerseLookupFail(Exception("Verse is null; probably non-existent book/chap/verse $book $chapter:$verseNumber"))
             } else {
                 Log.d("MV-MV", "verseId=${verse.id}")
@@ -160,7 +161,7 @@ class AddVerseFragment : Fragment() {
             negativeButton("No") {
                 Analytics.trackEvent(Analytics.LOOKUP_VERSE_SERVER_FAULT, e.localizedMessage)
 
-                Crashlytics.log("User said 'no', it wasn't them")
+                Crashlytics.log("User said 'no', it wasn't them: $exactRef")
                 Crashlytics.logException(e)
             }
         }.show()
@@ -263,17 +264,16 @@ class AddVerseFragment : Fragment() {
         // result has reason
         // 2018-09-07 02:28:48.023 9632-9734/com.spiritflightapps.memverse.debug D/OkHttp: {"error":"bad_request","error_description":"The data given to this server does not meet our criteria.","reason":"Already added previously"}
         //TODO: add ok buttons to them all.
-        Crashlytics.log("add verse fail; could've already been there.")
+        Crashlytics.log("add verse fail $exactRef; could've already been there.")
         Crashlytics.logException(e)
     }
 
     private fun onAddVerseNo(verse: Verse) {
-        Log.d("MV_AV", "User chose no, don't add ${verse.ref}")
-        Analytics.trackEvent(Analytics.ADD_VERSE_NO, verse)
+        Log.d("MV_AV", "User chose no, don't add $exactRef")
+        Analytics.trackEvent(Analytics.ADD_VERSE_NO, exactRef)
     }
 
 // TODO: Use this?
-// https://medium.com/@raghunandan2005/retrofit2-and-koltin-coroutines-sample-938a6842b0a1
 
 
 }

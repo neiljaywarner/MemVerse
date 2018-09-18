@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.startActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
@@ -47,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = LoginActivity::class.java.simpleName
+        const val EXTRA_EMAIL = "extra_email"
     }
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -100,10 +102,11 @@ class LoginActivity : AppCompatActivity() {
         button_signin.setOnClickListener { attemptLogin() }
 
         button_signup.setOnClickListener {
-            //trackSignup()
-            // browse("https://www.memverse.com/users/sign_up")
-            note: basic idea works but need screen with password conf etc
-            //signupAsync(name, emmail, password)
+
+            trackSignup()
+            val emailStr = email.text.toString().trim()
+            Log.d("NJW", "emailStr=$emailStr")
+            startActivity<SignupActivity>(SignupActivity.EXTRA_EMAIL to emailStr)
         }
     }
 
@@ -204,7 +207,7 @@ class LoginActivity : AppCompatActivity() {
                 trackLoginFail()
                 Crashlytics.log("login call onFailure; could be bad username/pass ${call.request()} ${t.message}")
                 showProgress(false)
-                Snackbar.make(button_signin, "Can't login with these credentials; please check username/password combination.", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(button_signin, "Can't login with these credentials; please make sure you confirmed with email link and check username/password combination.", Snackbar.LENGTH_LONG).show()
             }
         })
     }

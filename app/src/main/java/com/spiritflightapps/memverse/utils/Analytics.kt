@@ -7,6 +7,8 @@ import com.spiritflightapps.memverse.model.Verse
 
 object Analytics {
 
+    val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(MVApplication.instance) }
+
     const val ADD_VERSE_CLICK = "add_verse_click"
     const val ADD_VERSE_TO_LEARNING = "add_verse_to_learning"
     const val ADD_VERSE_TO_PENDING = "add_verse_to_pending"
@@ -32,8 +34,6 @@ object Analytics {
 
     private fun trackEventToFirebase(eventName: String, eventProperties: HashMap<String, String>?) {
 
-        val firebaseAnalytics = FirebaseAnalytics.getInstance(MVApplication.instance)
-
         var bundle: Bundle? = null
         if (eventProperties != null) {
             bundle = Bundle().apply {
@@ -44,6 +44,11 @@ object Analytics {
         }
 
         firebaseAnalytics.logEvent(eventName, bundle)
+
+    }
+
+    fun addUserProperty(userPropertyKey: String, userPropertyValue: String) {
+        firebaseAnalytics.setUserProperty(userPropertyKey, userPropertyValue)
 
     }
 

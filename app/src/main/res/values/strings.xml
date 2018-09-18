@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">MemVerse</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Username</string>
+    <!-- Strings related to login/signup -->
+    <string name="prompt_name">Name</string>
+    <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_name">Name cannot be blank</string>
     <string name="error_invalid_password">This password is too short</string>
+    <string name="error_password_and_confirm_must_match">Password and confirm password must match</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
@@ -50,4 +53,6 @@
     <string name="book">Book</string>
     <string name="verse">Verse</string>
     <string name="translations">Select a translation</string>
+    <string name="action_sign_up_short">Signup</string>
+    <string name="confirm_password">Confirm password</string>
 </resources>
