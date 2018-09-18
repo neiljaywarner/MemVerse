@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onRatingsHelpAcknowledged() {
         viewGroupRatings.visibility = View.VISIBLE
-        Prefs.saveToPrefs(this.ctx, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, true)
+        Prefs.saveToPrefs(this, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, true)
     }
 
     private fun onShowClicked() {
@@ -402,7 +402,8 @@ class MainActivity : AppCompatActivity() {
             updateButtonUi()
             setupLiveFeedback()
         } else {
-            text_reference.text = "No verses found; please make sure you have a valid network connection and verses added from www.memverse.com"
+            Log.d("NJWMV", "no active verses; ask them to add one.")
+            alert("You have no active verses; please add a verse") { okButton { startActivity<AddVerseActivity>() } }.show()
         }
 
     }
