@@ -2,7 +2,10 @@ package com.spiritflightapps.memverse.utils
 
 import android.util.Log
 
-data class YouVersionVerse(val book: String, val chapter: Int, val verse: Int, val version: String)
+data class YouVersionVerse(val book: String, val chapter: Int, val verse: Int, val version: String) {
+    val reference: String
+        get() = "$book $chapter:$verse $version"
+}
 
 
 fun String.getSimpleVerseFromShareString(): YouVersionVerse? {

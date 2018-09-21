@@ -290,6 +290,7 @@ class AddVerseFragment : Fragment() {
         val (book, chapter, verseNumber, version) = simpleVerse
         if (youversionToMemverseMap.containsKey(version)) {
             Log.d("NJW", "---->Not missing $version")
+            Analytics.trackEvent(Analytics.YOUVERSION_VERSE_LOOKUP, simpleVerse.reference)
             makeLookupVerseAsyncNetworkCall(requireContext(), book, chapter.toString(), verseNumber.toString(), version)
         } else {
             Log.d("NJW", "---->Missing $version")

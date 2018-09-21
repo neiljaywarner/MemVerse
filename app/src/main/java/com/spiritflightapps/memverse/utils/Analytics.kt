@@ -25,6 +25,7 @@ object Analytics {
     const val LOOKUP_VERSE_USER_FAULT = "lookup_verse_userfault"
     const val ADD_VERSE_FAIL_400_MAYBE_IN_LIST = "add_verse_fail_maybe_user"
     const val MISSING_YOUVERSION_TRANSLATION = "missing_youversion_translation"
+    const val YOUVERSION_VERSE_LOOKUP = "youversion_lookup"
 
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
