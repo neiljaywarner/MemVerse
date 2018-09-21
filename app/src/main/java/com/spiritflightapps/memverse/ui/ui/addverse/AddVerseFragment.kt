@@ -299,9 +299,9 @@ class AddVerseFragment : Fragment() {
 
     private fun handleMissingVersion(version: String) {
         Analytics.trackMissingYouVersionVersion(version)
-        requireContext().alert("Sorry, we don't currently support $version; let us know via the feedback feature if you want to.") {
-            okButton { }
-        }
+        requireContext().alert("Sorry, we don't currently support $version; let us know via the feedback feature if you want to, and/or pick a different version.") {
+            okButton { activity?.finish() }
+        }.show()
     }
 
     //TODO: move to intentextensions
