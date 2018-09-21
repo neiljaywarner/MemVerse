@@ -19,7 +19,7 @@ android {
         // 70=0.37 = beta version; 73= version = 0.38 regular
         // 74 = 0.39 dev ; 75 = 0.39
         // 77 = 0.40 8-sep 2018 with add feature and 1-5 explanation
-        // 79 = registration feature and share-in
+        // 79 = registration feature and share-in from youversion
         versionName "0.42"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
