@@ -15,7 +15,27 @@ the system is flexible
 have fun!
 
 """
-
+var youversionToMemverseMap: HashMap<String, String> = hashMapOf(
+        "KJV" to "KJV",
+        "NIV" to "NNV",
+        "ERV" to "ERV",
+        "NLT" to "NLT",
+        "AMP" to "AMP",
+        "CEV" to "CEV",
+        "ERV" to "ERV",
+        "ESV" to "ESV",
+        "GW" to "GW",
+        "GNT" to "GNT",
+        "HCSB" to "HCS",
+        "NASB" to "NAS",
+        "NCV" to "NCV",
+        "NIRV" to "IRV",
+        "NKV" to "NKJ",
+        "NRSV" to "NRS",
+        "MSG" to "MSG",
+        "ESV" to "ESV07",
+        "DARBY" to "DTL"
+)
 // yay, google search showed https://maustsontoast.com/2010/comma-separated-list-of-bible-books
 const val BOOKS_OF_BIBLE = """
     Genesis, Exodus, Leviticus, Numbers, Deuteronomy, Joshua, Judges, Ruth, 1 Samuel, 2 Samuel, 1 Kings, 2 Kings, 1 Chronicles, 2 Chronicles, Ezra, Nehemiah, Esther, Job, Psalms, Proverbs, Ecclesiastes, Song of Solomon, Isaiah, Jeremiah, Lamentations, Ezekiel, Daniel, Hosea, Joel, Amos, Obadiah, Jonah, Micah, Nahum, Habakkuk, Zephaniah, Haggai, Zechariah, Malachi, Matthew, Mark, Luke, John, Acts, Romans, 1 Corinthians, 2 Corinthians, Galatians, Ephesians, Philippians, Colossians, 1 Thessalonians, 2 Thessalonians, 1 Timothy, 2 Timothy, Titus, Philemon, Hebrew, James, 1 Peter, 2 Peter, 1 John, 2 John, 3 John, Jude, Revelation

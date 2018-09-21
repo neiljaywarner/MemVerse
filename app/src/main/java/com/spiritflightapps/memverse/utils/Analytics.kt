@@ -1,7 +1,9 @@
 package com.spiritflightapps.memverse.utils
 
 import android.os.Bundle
+import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.spiritflightapps.memverse.BuildConfig
 import com.spiritflightapps.memverse.MVApplication
 import com.spiritflightapps.memverse.model.Verse
 
@@ -22,14 +24,18 @@ object Analytics {
     const val LOOKUP_VERSE_SERVER_FAULT: String = "lookup_verse_server_fault"
     const val LOOKUP_VERSE_USER_FAULT = "lookup_verse_userfault"
     const val ADD_VERSE_FAIL_400_MAYBE_IN_LIST = "add_verse_fail_maybe_user"
+    const val MISSING_YOUVERSION_TRANSLATION = "missing_youversion_translation"
 
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
     fun trackEvent(eventName: String, ref: String) = trackEvent(eventName, hashMapOf(Pair(FirebaseAnalytics.Param.ITEM_NAME, ref)))
 
     fun trackEvent(eventName: String, eventProperties: HashMap<String, String>? = null) {
-        //trackEventToAppCenter(eventName, eventProperties) //track event to somewhere else, like testfairy
-        trackEventToFirebase(eventName, eventProperties)
+        if (BuildConfig.DEBUG) {
+            Log.d("NJW-MV-Analytics", "eventName=$eventName;properties=$eventProperties")
+        } else {
+            trackEventToFirebase(eventName, eventProperties)
+        }
     }
 
     private fun trackEventToFirebase(eventName: String, eventProperties: HashMap<String, String>?) {
@@ -49,7 +55,10 @@ object Analytics {
 
     fun addUserProperty(userPropertyKey: String, userPropertyValue: String) {
         firebaseAnalytics.setUserProperty(userPropertyKey, userPropertyValue)
+    }
 
+    fun trackMissingYouVersionVersion(translation: String) {
+        trackEvent(MISSING_YOUVERSION_TRANSLATION, hashMapOf(Pair(FirebaseAnalytics.Param.ITEM_NAME, translation)))
     }
 
 }

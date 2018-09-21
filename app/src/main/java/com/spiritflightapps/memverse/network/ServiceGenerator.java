@@ -29,6 +29,10 @@ public class ServiceGenerator {
         sPasswordAuthToken = passwordAuthToken;
     }
 
+    public static boolean hasPasswordAuthToken() {
+        return !sPasswordAuthToken.isEmpty();
+    }
+
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
     private static Retrofit.Builder builder =

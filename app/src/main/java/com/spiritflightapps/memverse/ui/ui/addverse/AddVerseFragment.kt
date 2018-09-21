@@ -1,8 +1,10 @@
 package com.spiritflightapps.memverse.ui.ui.addverse
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,7 @@ import com.spiritflightapps.memverse.model.Verse
 import com.spiritflightapps.memverse.network.MemverseAddRequest
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
-import com.spiritflightapps.memverse.utils.Analytics
-import com.spiritflightapps.memverse.utils.BOOKS_OF_BIBLE
-import com.spiritflightapps.memverse.utils.Prefs
-import com.spiritflightapps.memverse.utils.TRANSLATIONS_ABBREVIATIONS_TEXT
+import com.spiritflightapps.memverse.utils.*
 import kotlinx.android.synthetic.main.add_verse_fragment.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -43,6 +42,7 @@ class AddVerseFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         activity?.title = getString(R.string.add_verse)
+        handleIntent()
 
     }
 
@@ -274,6 +274,47 @@ class AddVerseFragment : Fragment() {
     }
 
 // TODO: Use this?
+
+    fun handleIntent() {
+        activity?.let { activity: FragmentActivity ->
+            val sharedText = getTextFromIntent(activity.intent)
+            if (sharedText.isNotBlank()) {
+                handleSharedText(sharedText)
+            }
+        }
+    }
+
+    //TODO: Could be unit tested.
+    fun handleSharedText(sharedText: String) {
+        val simpleVerse = sharedText.getSimpleVerseFromShareString() ?: return
+        val (book, chapter, verseNumber, version) = simpleVerse
+        if (youversionToMemverseMap.containsKey(version)) {
+            Log.d("NJW", "---->Not missing $version")
+            makeLookupVerseAsyncNetworkCall(requireContext(), book, chapter.toString(), verseNumber.toString(), version)
+        } else {
+            Log.d("NJW", "---->Missing $version")
+            handleMissingVersion(version)
+        }
+    }
+
+    private fun handleMissingVersion(version: String) {
+        Analytics.trackMissingYouVersionVersion(version)
+        requireContext().alert("Sorry, we don't currently support $version; let us know via the feedback feature if you want to.") {
+            okButton { }
+        }
+    }
+
+    //TODO: move to intentextensions
+    private fun getTextFromIntent(intent: Intent?): String {
+        // TODO: Timber with crashlytics.log for d and up
+        return if (intent?.action == Intent.ACTION_SEND) {
+            Log.d("MV-NJW", "extras=${intent.extras}")
+            intent.getStringExtra(Intent.EXTRA_TEXT)
+        } else {
+            ""
+        }
+    }
+
 
 
 }
