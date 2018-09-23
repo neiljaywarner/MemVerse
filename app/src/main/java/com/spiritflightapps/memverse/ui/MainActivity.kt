@@ -349,19 +349,33 @@ class MainActivity : AppCompatActivity() {
     // TODO: a way to turn off the first letter feature.
     private fun checkWords() {
         val verseWords = currentVerse.verse.text.split(" ")
-        val enteredWords = edit_verse_text.text.toString().split(" ")
+        val enteredWords = edit_verse_text.text.toString().trim().split(" ")
         val feedbackWords = mutableListOf<String>()
-        enteredWords.forEachIndexed { index, value
+        verseWords.forEachIndexed { index, verseWord
             ->
             run {
-                if (verseWords[index].approximatelyEquals(value)) {
-                    feedbackWords.add(verseWords[index])
+                if (index < enteredWords.size && enteredWords[index].approximatelyEquals(verseWord)) {
+                    feedbackWords.add(verseWord)
                 } else {
-                    feedbackWords.add("...")
+                    feedbackWords.add(verseWord.firstLetterHint())
                 }
             }
         }
-        text_verse_live_feedback.text = feedbackWords.joinToString(" ")
+        val feedbackText = feedbackWords.joinToString(" ")
+        text_verse_live_feedback.text = feedbackText
+        if (feedbackText == currentVerse.verse.text) {
+            onVerseCorrect()
+        }
+    }
+
+    //TODO: Settings, let them choose from hint "no hint", "first letter hhint" or "first letter with one dot per letter"
+    // this is neat though, it helps you practice in your head without tying a single letter, that seems really ool
+    fun String.firstLetterHint(): String {
+        if (this.length == 1) {
+            return this
+        } else {
+            return this.replaceRange(1..this.lastIndex, ".".repeat(this.length - 1))
+        }
     }
 
     //todo; use ktx
@@ -384,6 +398,8 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
+    // TODO: add feature to turn it off in settings screen, wonder if anyone would...
+    // or to turn off live feedback.. a selector..
 
     // TODO: Later maybe do hte "rigthword1 ... rightword2" that the website does
     // could even look at iOS code to determine the regex or the logic...
