@@ -2,7 +2,7 @@ package com.spiritflightapps.memverse.utils
 
 const val RATINGS_INFO_TEXT = """
 
-Please rate how you did on the verse with the number buttons
+Please rate how you do on the verse with the number buttons
 
 5. Remembered - Perfect
 4. Remembered - Hesitation

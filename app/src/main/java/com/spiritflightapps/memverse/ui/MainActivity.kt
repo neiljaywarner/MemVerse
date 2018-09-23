@@ -74,8 +74,13 @@ class MainActivity : AppCompatActivity() {
         button4.setOnClickListener { rate("4") }
         button5.setOnClickListener { rate("5") }
 
+        button_info.setOnClickListener { showRatingsDialog() }
+
 
     }
+
+    // todo: privacy policy on about screen or something
+    // https://app-privacy-policy-generator.firebaseapp.com/
 
     private fun showRatingButtonsIfNeeded() {
         if (userAlreadyAcknowledgeRatingsHelp) {
@@ -89,7 +94,11 @@ class MainActivity : AppCompatActivity() {
         if (userAlreadyAcknowledgeRatingsHelp) {
             return
         }
+        showRatingsDialog()
 
+    }
+
+    private fun showRatingsDialog() {
         trackRatingsHelpDisplayed()
         // TODO: Ths text be fun to do through firebase remote config one day
         alert(RATINGS_INFO_TEXT, "Ratings Help") {
