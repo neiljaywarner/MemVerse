@@ -346,6 +346,44 @@ class MainActivity : AppCompatActivity() {
         return this.filter { it.isLetterOrDigit() }
     }
 
+    // TODO: a way to turn off the first letter feature.
+    private fun checkWords() {
+        val verseWords = currentVerse.verse.text.split(" ")
+        val enteredWords = edit_verse_text.text.toString().split(" ")
+        val feedbackWords = mutableListOf<String>()
+        enteredWords.forEachIndexed { index, value
+            ->
+            run {
+                if (verseWords[index].approximatelyEquals(value)) {
+                    feedbackWords.add(verseWords[index])
+                } else {
+                    feedbackWords.add("...")
+                }
+            }
+        }
+        text_verse_live_feedback.text = feedbackWords.joinToString(" ")
+    }
+
+    //todo; use ktx
+    private fun setupLiveFeedback2() {
+        edit_verse_text.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+                //do nothing
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                //do nothing
+            }
+
+            //todo someday see if get better ux for voice or otherwise by utilizing parameters
+            // like if > 1 chanaged, then count or copoy paste
+            // and can operate only on the charsequence etc.
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                checkWords()
+            }
+
+        })
+    }
 
     // TODO: Later maybe do hte "rigthword1 ... rightword2" that the website does
     // could even look at iOS code to determine the regex or the logic...
@@ -379,7 +417,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
-        // TODO: Kotlin magic to the above
+        // TODO: Kotlin magic to the above, ktx
     }
 
     private fun onVerseCorrect() {
@@ -407,7 +445,7 @@ class MainActivity : AppCompatActivity() {
         if (memverses.isNotEmpty()) {
             updateVerseUi()
             updateButtonUi()
-            setupLiveFeedback()
+            setupLiveFeedback2()
         } else {
             Log.d("NJWMV", "no active verses; ask them to add one.")
             alert("You have no active verses; please add a verse") { okButton { startActivity<AddVerseActivity>() } }.show()
