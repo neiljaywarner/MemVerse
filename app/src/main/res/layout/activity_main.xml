@@ -130,23 +130,8 @@
         android:layout_height="wrap_content" />
 
 
-    <LinearLayout
-        android:layout_marginTop="57dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <!--TODO: Extract to MemversebuttonStyle -->
-        <!--
-                https://xd.adobe.com/spec/3b25bf4a-5e6b-41ee-513c-a1c9d41fd31d-4d14/screen/be763504-b6d7-459c-b8fb-a6f6485b7f4c/Learning-1/
-                -->
-
-
-
-
-    </LinearLayout>
+    <!--                 https://xd.adobe.com/spec/3b25bf4a-5e6b-41ee-513c-a1c9d41fd31d-4d14/screen/be763504-b6d7-459c-b8fb-a6f6485b7f4c/Learning-1/
+ -->
 
     <LinearLayout
         android:id="@+id/viewGroupRatings"

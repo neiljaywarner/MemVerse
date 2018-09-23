@@ -371,10 +371,10 @@ class MainActivity : AppCompatActivity() {
     //TODO: Settings, let them choose from hint "no hint", "first letter hhint" or "first letter with one dot per letter"
     // this is neat though, it helps you practice in your head without tying a single letter, that seems really ool
     fun String.firstLetterHint(): String {
-        if (this.length == 1) {
-            return this
+        return if (this.length == 1) {
+            this
         } else {
-            return this.replaceRange(1..this.lastIndex, ".".repeat(this.length - 1))
+            this.replaceRange(1..this.lastIndex, ".".repeat(this.length - 1))
         }
     }
 
