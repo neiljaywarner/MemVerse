@@ -268,6 +268,7 @@ class AddVerseFragment : Fragment() {
         Crashlytics.logException(e)
     }
 
+
     private fun onAddVerseNo(verse: Verse) {
         Log.d("MV_AV", "User chose no, don't add $exactRef")
         Analytics.trackEvent(Analytics.ADD_VERSE_NO, exactRef)
@@ -285,7 +286,7 @@ class AddVerseFragment : Fragment() {
     }
 
     //TODO: Could be unit tested.
-    fun handleSharedText(sharedText: String) {
+    private fun handleSharedText(sharedText: String) {
         val simpleVerse = sharedText.getSimpleVerseFromShareString() ?: return
         val (book, chapter, verseNumber, version) = simpleVerse
         if (youversionToMemverseMap.containsKey(version)) {

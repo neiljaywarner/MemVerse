@@ -1,6 +1,8 @@
 package com.spiritflightapps.memverse.ui
 
 
+import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -10,6 +12,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -360,6 +363,9 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (currentVerse.verse.text.approximatelyEquals(enteredString)) {
+                    // TODO: Improve this so it splits into words
+                    // and checks each word so that it can then output with the correct one
+                    // word by word and get the "..." right
                     onVerseCorrect()
                 }
             }
@@ -381,6 +387,7 @@ class MainActivity : AppCompatActivity() {
         title = "Correct! Good job"
         Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
         viewGroupRatings.visibility = View.VISIBLE
+        viewGroupRatings.hideKeyboard()
         showRatingsInfoDialogIfNeeded()
     }
 
@@ -628,3 +635,43 @@ class MainActivity : AppCompatActivity() {
 // Note:
 // iOS basic getMemverses is https://github.com/avitus/Memverse_iOS/blob/master/Memverse_iOS/MemorizeViewController.swift
 // wit realm local db fetch before today's date and pending
+
+
+/** TODO: sep file for extensions
+ *
+ *
+ *
+ */
+fun View.focusAndshowKeyboard() {
+    requestFocusFromTouch()
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
+fun View.showKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
+fun View.hideKeyboard() {
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(windowToken, 0)
+}
+
+fun Activity.showKeyboard() {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+}
+
+fun Activity.hideKeyboard() {
+    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+}
+
+// TODO: Fragment?
+
+//Note: First letter feature
+// Josh's first letter feature to tap the first letter and have it output the whole word.  that is very smart.
+// the website has the first letter hints which you can turn off.
+// we could have "firstLetterFeature" setting if desired where we use the other feature for first letters
+// but carina and sam like the ones the web uses...
