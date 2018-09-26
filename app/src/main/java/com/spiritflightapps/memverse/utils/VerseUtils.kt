@@ -16,6 +16,7 @@ fun String.getSimpleVerseFromShareString(): YouVersionVerse? {
     }
 }
 
+// TODO: It would be nice to support two verses / multiple verses Carina points out.
 private fun String.getSimpleVerseFromYouVersionShareString(): YouVersionVerse? {
     try {
         Log.d("NJW", "youVersionShareString = $this")

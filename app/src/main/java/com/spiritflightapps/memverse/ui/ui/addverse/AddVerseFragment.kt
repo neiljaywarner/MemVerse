@@ -77,7 +77,7 @@ class AddVerseFragment : Fragment() {
         Prefs.saveToPrefs(context, Prefs.LAST_TRANSLATION_SELECTED, abbreviation)
     }
 
-    fun getTranslationAbbreviation(translationDescription: String): String {
+    private fun getTranslationAbbreviation(translationDescription: String): String {
         return translationDescription.split("-")[1].trim()
     }
 
@@ -152,15 +152,17 @@ class AddVerseFragment : Fragment() {
 }
  */
     //TODO: if get a bunch of "user fault" well, we could obviously disallow that b/c its easy to know w/o network call.
+    // TODO: when we have last verse/chapter of every book we can eliminate invalid book/chapter/verse/combination
     private fun onVerseLookupFail(e: Exception) {
         Log.e("NJWMV-", "onVerseLookupFail ${e.localizedMessage}")
         Analytics.trackEvent(Analytics.ADD_VERSE_LOOKUP_FAIL)
         // we could change this to yes/no
-        text_translation_abbreviation.context.alert("Verse lookup failed; could this be an invalid book/chapter verse combination like James 10:99?") {
+        text_translation_abbreviation.context.alert("Verse lookup failed - please check and see if it is on memverse.com in this translation and if not please consider adding it - or is this an invalid combination like James 24:10") {
             positiveButton("Yes") { Analytics.trackEvent(Analytics.LOOKUP_VERSE_USER_FAULT) }
             negativeButton("No") {
                 Analytics.trackEvent(Analytics.LOOKUP_VERSE_SERVER_FAULT, e.localizedMessage)
-
+                //TODO: Improve this and see if it has a different response
+                // if it's a 501 vs if it is just not found vs invalid book/chapter; it probably does.
                 Crashlytics.log("User said 'no', it wasn't them: $exactRef")
                 Crashlytics.logException(e)
             }
@@ -287,7 +289,14 @@ class AddVerseFragment : Fragment() {
 
     //TODO: Could be unit tested.
     private fun handleSharedText(sharedText: String) {
-        val simpleVerse = sharedText.getSimpleVerseFromShareString() ?: return
+        val simpleVerse = sharedText.getSimpleVerseFromShareString()
+        if (simpleVerse == null) {
+            Analytics.trackEvent(Analytics.SHARE_PARSE_FAIL, sharedText)
+            requireContext().alert {
+                okButton { }
+            }
+            return
+        }
         val (book, chapter, verseNumber, version) = simpleVerse
         if (youversionToMemverseMap.containsKey(version)) {
             Log.d("NJW", "---->Not missing $version")

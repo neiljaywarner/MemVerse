@@ -1,5 +1,6 @@
 package com.spiritflightapps.memverse.utils
 
+const val PRIVACY_POLICY_URL = "https://docs.google.com/document/d/1h15tWfMvr-a3g9mnDZ7PxEagql9c8nlTURuvRCI3nPE/edit?usp=sharing"
 const val RATINGS_INFO_TEXT = """
 
 Please rate how you do on the verse with the number buttons

@@ -9,7 +9,7 @@ import com.spiritflightapps.memverse.model.Verse
 
 object Analytics {
 
-    val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(MVApplication.instance) }
+    private val firebaseAnalytics by lazy { FirebaseAnalytics.getInstance(MVApplication.instance) }
 
     const val ADD_VERSE_CLICK = "add_verse_click"
     const val ADD_VERSE_TO_LEARNING = "add_verse_to_learning"
@@ -26,6 +26,7 @@ object Analytics {
     const val ADD_VERSE_FAIL_400_MAYBE_IN_LIST = "add_verse_fail_maybe_user"
     const val MISSING_YOUVERSION_TRANSLATION = "missing_youversion_translation"
     const val YOUVERSION_VERSE_LOOKUP = "youversion_lookup"
+    const val SHARE_PARSE_FAIL = "share_parse_fail"
 
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
@@ -45,7 +46,7 @@ object Analytics {
         if (eventProperties != null) {
             bundle = Bundle().apply {
                 eventProperties.entries.forEach { eventProperty ->
-                    putString(eventProperty.key, eventProperty.value)
+                    putString(eventProperty.key, eventProperty.value.substring(0..95))
                 }
             }
         }

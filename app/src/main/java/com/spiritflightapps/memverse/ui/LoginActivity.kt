@@ -19,12 +19,12 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.network.*
+import com.spiritflightapps.memverse.utils.PRIVACY_POLICY_URL
 import com.spiritflightapps.memverse.utils.Prefs
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.HttpException
@@ -108,6 +108,19 @@ class LoginActivity : AppCompatActivity() {
             Log.d("NJW", "emailStr=$emailStr")
             startActivity<SignupActivity>(SignupActivity.EXTRA_EMAIL to emailStr)
         }
+
+        button_privacy_policy.setOnClickListener { showPrivacyPolicy() }
+    }
+
+    private fun showPrivacyPolicy() {
+        Log.d("NJW", "tapped Privacy Policy link; $PRIVACY_POLICY_URL")
+        val browseLinkWorked = browse(PRIVACY_POLICY_URL)
+        if (browseLinkWorked.not()) {
+            alert("Can't open in browser; please visit $PRIVACY_POLICY_URL") {
+                okButton { }
+            }
+        }
+
     }
 
 

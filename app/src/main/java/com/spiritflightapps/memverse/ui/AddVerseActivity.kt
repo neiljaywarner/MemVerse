@@ -25,12 +25,3 @@ class AddVerseActivity : AppCompatActivity() {
 
 
 }
-/*
-intent?.action == Intent.ACTION_SEND -> {
-            if ("text/plain" == intent.type) {
-                handleSendText(intent) // Handle text being sent
-            } else if (intent.type?.startsWith("image/") == true) {
-                handleSendImage(intent) // Handle single image being sent
-            }
-        }
- */

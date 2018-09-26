@@ -249,6 +249,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun logout() {
+        // keep
         Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
         trackLogout()
         startActivity<LoginActivity>()

@@ -125,6 +125,20 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_gravity="bottom|end"
+                android:id="@+id/button_privacy_policy"
+                android:textSize="12sp"
+                android:textColor="@color/medium_green"
+                android:text="@string/privacy_policy"
+                tools:text="Privacy Policy"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+            <!-- https://docs.google.com/document/d/1h15tWfMvr-a3g9mnDZ7PxEagql9c8nlTURuvRCI3nPE/edit?usp=sharing -->
+
 
         </LinearLayout>
 
