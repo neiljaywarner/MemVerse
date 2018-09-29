@@ -46,6 +46,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="memverse.com"
+                    android:pathPattern="add" />
+
+                <data
+                    android:scheme="https"
+                    android:host="memverse.com"
+                    android:pathPattern="add" />
+
+                <data
+                    android:scheme="sfa"
+                    android:host="memverse.com"
+                    android:pathPattern="add" />
+
+                <!-- ./adb shell am start -W -a android.intent.action.VIEW -d "http://memverse/add?book=Colossians&chapter=1&verse=17&translation=NIV" com.spiritflightapps.memverse -->
+
+                <!--
+                adb shell am start
+        -W -a android.intent.action.VIEW
+        -d "example://gizmos" com.example.android
+        -->
+            </intent-filter>
         </activity>
         <activity android:name=".ui.SignupActivity" />
 
