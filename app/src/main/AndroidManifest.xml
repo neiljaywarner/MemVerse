@@ -48,6 +48,22 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.SignupActivity" />
+
+        <!-- TODO: create a service that extends firebase messaging service
+        to receive messages in the foreground which is pretty handy -->
+        <!--
+        <service android:name=".java.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        -->
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
     </application>
+
 
 </manifest>
