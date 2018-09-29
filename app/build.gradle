@@ -13,7 +13,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.spiritflightapps.memverse"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 28 //25-sep-2018 for mandatory nov 2018 upgrade.
         versionCode 87
         // 70=0.37 = beta version; 73= version = 0.38 regular
@@ -85,6 +85,8 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
 
     implementation 'com.google.firebase:firebase-messaging:17.3.2'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:17.0.1'
+
 
 
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
