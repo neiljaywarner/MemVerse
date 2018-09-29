@@ -13,7 +13,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.spiritflightapps.memverse"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28 //25-sep-2018 for mandatory nov 2018 upgrade.
         versionCode 87
         // 70=0.37 = beta version; 73= version = 0.38 regular
@@ -23,6 +23,8 @@ android {
         //85/0.45 - minor tweak and privacy policy
         //07-0.50 in app notifications and FCM that we can do from console...
         versionName "0.50"
+        multiDexEnabled true
+
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
