@@ -3,7 +3,6 @@ package com.spiritflightapps.memverse.utils
 import android.os.Bundle
 import android.util.Log
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.spiritflightapps.memverse.BuildConfig
 import com.spiritflightapps.memverse.MVApplication
 import com.spiritflightapps.memverse.model.Verse
 
@@ -41,10 +40,11 @@ object Analytics {
     }
 
     fun trackEvent(eventName: String, eventProperties: HashMap<String, String>? = null) {
-        if (BuildConfig.DEBUG) {
-            Log.d("NJW-MV-Analytics", "eventName=$eventName;properties=$eventProperties")
-        } else {
+        try {
             trackEventToFirebase(eventName, eventProperties)
+        } catch (e: Exception) {
+            // TODO timbe rwith e(ex) { "msg" }
+            Log.e("NJW", "Crashing visibly to the user because of analytics is bad!")
         }
     }
 

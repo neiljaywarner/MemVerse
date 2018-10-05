@@ -274,7 +274,7 @@ class AddVerseFragment : Fragment() {
         // result has reason
         // 2018-09-07 02:28:48.023 9632-9734/com.spiritflightapps.memverse.debug D/OkHttp: {"error":"bad_request","error_description":"The data given to this server does not meet our criteria.","reason":"Already added previously"}
         //TODO: add ok buttons to them all.
-        Crashlytics.log("add verse fail $exactRef; could've already been there.")
+        Crashlytics.log("add verse fail $exactRef; could've already been there in their list")
         Crashlytics.logException(e)
     }
 
