@@ -1,6 +1,5 @@
 package com.spiritflightapps.memverse.ui
 
-import android.net.Uri
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
@@ -20,17 +19,7 @@ class AddVerseActivity : AppCompatActivity() {
             return
         }
 
-        val action: String? = intent?.action
-        val data: Uri? = intent?.data
 
-        Log.d("NJW", "intent action = $action")
-        Log.d("NJW", "intent uri = $data")
-
-        // adb shell am start
-        //        -W -a android.intent.action.VIEW
-        //        -d "example://gizmos" com.example.android
-
-        // handle deeplink sfa://memverse/add?book=Colossians&chapter=1&verse=17&translation=NIV
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                     .replace(R.id.container, AddVerseFragment.newInstance())

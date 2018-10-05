@@ -16,6 +16,7 @@ import com.spiritflightapps.memverse.model.Verse
 import com.spiritflightapps.memverse.network.MemverseAddRequest
 import com.spiritflightapps.memverse.network.MemverseApi
 import com.spiritflightapps.memverse.network.ServiceGenerator
+import com.spiritflightapps.memverse.ui.MainActivity
 import com.spiritflightapps.memverse.utils.*
 import kotlinx.android.synthetic.main.add_verse_fragment.*
 import kotlinx.coroutines.experimental.android.UI
@@ -241,6 +242,8 @@ class AddVerseFragment : Fragment() {
 
     }
 
+    private var isFromYouVersion: Boolean = false
+
     private fun addVerseSuccess(status: String) {
         if (status.equals("pending", ignoreCase = true)) {
             Analytics.trackEvent(Analytics.ADD_VERSE_TO_PENDING)
@@ -248,7 +251,12 @@ class AddVerseFragment : Fragment() {
             Analytics.trackEvent(Analytics.ADD_VERSE_TO_LEARNING)
         }
         text_translation_abbreviation.context.alert("Verse added to $status") {
-            okButton { activity?.finish() }
+            okButton {
+                if (isFromYouVersion) {
+                    context?.startActivity<MainActivity>()
+                }
+                activity?.finish()
+            }
         }.show()
 
     }
@@ -299,6 +307,7 @@ class AddVerseFragment : Fragment() {
         }
         val (book, chapter, verseNumber, version) = simpleVerse
         if (youversionToMemverseMap.containsKey(version)) {
+            isFromYouVersion = true
             Log.d("NJW", "---->Not missing $version")
             Analytics.trackEvent(Analytics.YOUVERSION_VERSE_LOOKUP, simpleVerse.reference)
             makeLookupVerseAsyncNetworkCall(requireContext(), book, chapter.toString(), verseNumber.toString(), version)

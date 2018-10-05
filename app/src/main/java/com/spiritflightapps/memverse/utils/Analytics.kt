@@ -30,7 +30,15 @@ object Analytics {
 
     fun trackEvent(eventName: String, verse: Verse) = trackEvent(eventName, verse.ref)
 
-    fun trackEvent(eventName: String, ref: String) = trackEvent(eventName, hashMapOf(Pair(FirebaseAnalytics.Param.ITEM_NAME, ref)))
+    fun trackEvent(eventName: String, itemName: String) {
+
+        val itemNameValue = if (itemName.length > 90) {
+            itemName.substring(0..90)
+        } else {
+            itemName
+        }
+        trackEvent(eventName, hashMapOf(Pair(FirebaseAnalytics.Param.ITEM_NAME, itemNameValue)))
+    }
 
     fun trackEvent(eventName: String, eventProperties: HashMap<String, String>? = null) {
         if (BuildConfig.DEBUG) {
@@ -46,7 +54,7 @@ object Analytics {
         if (eventProperties != null) {
             bundle = Bundle().apply {
                 eventProperties.entries.forEach { eventProperty ->
-                    putString(eventProperty.key, eventProperty.value.substring(0..95))
+                    putString(eventProperty.key, eventProperty.value)
                 }
             }
         }
