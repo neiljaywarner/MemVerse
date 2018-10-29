@@ -201,6 +201,7 @@ class AddVerseFragment : Fragment() {
 // but instead o fe.handleException, make that resource error like earlier.
 // https://proandroiddev.com/oversimplified-network-call-using-retrofit-livedata-kotlin-coroutines-and-dsl-512d08eadc16
     private fun makeAddVerseAsyncNetworkCall(ctx: Context, verse: Verse) = launch(UI) {
+        // TODO: Use regular progress bars in the fragment - they won't leak causing weird behaviour!!!
         val spinner = ctx.indeterminateProgressDialog(message = "Please wait a bit…", title = "Adding ${verse.ref}")
         spinner.show()
 

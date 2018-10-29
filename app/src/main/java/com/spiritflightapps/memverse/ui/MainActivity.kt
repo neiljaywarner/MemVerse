@@ -41,7 +41,9 @@ class MainActivity : AppCompatActivity() {
 
     // put in baseactivity or mainapplication
     private val mFirebaseAnalytics: FirebaseAnalytics by lazy { FirebaseAnalytics.getInstance(this) }
-    private val userAlreadyAcknowledgeRatingsHelp by lazy { Prefs.getFromPrefs(this, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, false) }
+
+    private val userAlreadyAcknowledgeRatingsHelp: Boolean
+        get() = Prefs.getFromPrefs(this, Prefs.RATINGS_HELP_DIALOG_ACKNOWLEDGED, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -181,6 +183,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onDeleteMenuOptionSelected() {
+        Crashlytics.setString("last_UI_action", "delete_selected")
+
         trackDeleteOptionSelected()
         alert("Are you sure you want to remove ${currentVerse.ref} from your list?", "Remove this verse?") {
             yesButton { onDeleteYesSelected() }
@@ -188,7 +192,10 @@ class MainActivity : AppCompatActivity() {
         }.show()
     }
 
-    private fun onAddMenuOptionSelected() = startActivity(intentFor<AddVerseActivity>())
+    private fun onAddMenuOptionSelected() {
+        Crashlytics.setString("last_UI_action", "add_selected")
+        startActivity(intentFor<AddVerseActivity>())
+    }
 
     private fun onDeleteYesSelected() {
         trackDeleteYesSelected()
@@ -220,6 +227,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showFeedbackDialog() {
+        Crashlytics.setString("last_UI_action", "show_feedback")
+
         val appId = 9502 // Replace with your application's ID
         val apiKey = BuildConfig.DOORBELL_IO_API_KEY // Replace with your application's API key
         val doorbellDialog = Doorbell(this, appId.toLong(), apiKey) // Create the Doorbell object
@@ -249,6 +258,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun logout() {
+        Crashlytics.setString("last_UI_action", "logout")
+
         // keep
         Hawk.put(ServiceGenerator.AUTH_TOKEN_PREFS_KEY, "")
         trackLogout()
@@ -258,6 +269,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun trackShowClicked() {
+        Crashlytics.setString("last_UI_action", "show")
+
         val bundle = Bundle().apply {
             putString(FirebaseAnalytics.Param.ITEM_NAME, currentVerse.ref)
         }
@@ -277,14 +290,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun trackHideClicked() {
+        Crashlytics.setString("last_UI_action", "hide")
+
         mFirebaseAnalytics.logEvent("hide", Bundle())
     }
 
     private fun trackLogout() {
+        Crashlytics.setString("last_UI_action", "logout")
+
         mFirebaseAnalytics.logEvent("logout", Bundle())
     }
 
     private fun trackNext() {
+        Crashlytics.setString("last_UI_action", "next")
+
         mFirebaseAnalytics.logEvent("next", Bundle())
     }
 
@@ -297,6 +316,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun trackPrevious() {
+        Crashlytics.setString("last_UI_action", "previous")
+
         mFirebaseAnalytics.logEvent("previous", Bundle())
     }
 
@@ -308,6 +329,8 @@ class MainActivity : AppCompatActivity() {
     // TODO: see if this actually works and use google analytics instead of firebase if needed
     // eventuallt track whay they shared with ...
     private fun trackShare(verseRef: String) {
+        Crashlytics.setString("last_UI_action", "share")
+
         val bundle = Bundle()
         // TODO: track share method with intent broadcast receiver.
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, verseRef)
@@ -315,10 +338,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun trackRate(itemName: String, rating: String) {
+        Crashlytics.setString("last_UI_action", "rate")
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName)
         bundle.putString(FirebaseAnalytics.Param.LEVEL, rating)
         mFirebaseAnalytics.logEvent("rate", bundle)
+
     }
 
     private fun updateUi() {
@@ -380,7 +405,7 @@ class MainActivity : AppCompatActivity() {
 
     //TODO: Settings, let them choose from hint "no hint", "first letter hhint" or "first letter with one dot per letter"
     // this is neat though, it helps you practice in your head without tying a single letter, that seems really ool
-    fun String.firstLetterHint(): String {
+    private fun String.firstLetterHint(): String {
         return if (this.length == 1) {
             this
         } else {
@@ -447,6 +472,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onVerseCorrect() {
+        Crashlytics.setString("last_UI_action", "verse_correct")
+
         Analytics.trackEvent(Analytics.LEARNING_VERSE_CORRECT, currentVerse.ref)
         title = "Correct! Good job"
         Toast.makeText(this@MainActivity, "Correct, good job! ", Toast.LENGTH_LONG).show()
@@ -455,20 +482,37 @@ class MainActivity : AppCompatActivity() {
         showRatingsInfoDialogIfNeeded()
     }
 
-    lateinit var memverses: List<Memverse>
+    var _memverses: List<Memverse>? = null
+
+    val memverses: List<Memverse>
+        get() {
+            if (_memverses == null) {
+                Crashlytics.log("tried to get list when null...")
+                Log.d("NJW", "tried to get list when null")
+                makeGetMemversesNetworkCall()
+                return emptyList()
+            } else {
+                return _memverses as List<Memverse>
+            }
+        }
     private var currentVerseIndex = 0
     val currentVerse: Memverse
         get() = memverses[currentVerseIndex]
+
 
     // TODO: Only show stuff up to this date, dont' show pending, etc.
     private fun updateUi(memverseResponse: MemverseResponse) {
         // TODO: in March Andy will make ti so you don't have to pull down pending in the network feed which would be fantastic.
         // TODO: Fix the sort date, i don't think it's quite right]
         // todo: make it by default notquiz u for future dates
-        val versesNotPending = memverseResponse.verses.filterNot { it -> it.status == "Pending" }
-        memverses = versesNotPending.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
+        Crashlytics.setInt("num_verses", memverseResponse.verses.size)
 
-        if (memverses.isNotEmpty()) {
+        val versesNotPending = memverseResponse.verses.filterNot { it -> it.status == "Pending" }
+        Crashlytics.setInt("num_verses_not_pending", versesNotPending.size)
+
+        _memverses = versesNotPending.sortedWith(compareBy(Memverse::status, Memverse::nextTestDate))
+
+        if (_memverses?.isNotEmpty() == true) {
             updateVerseUi()
             updateButtonUi()
             setupLiveFeedback2()
@@ -480,6 +524,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateButtonUi() {
+        Crashlytics.setInt("currentVerseIndex", currentVerseIndex)
+
         Log.d("NJWMV", "currentIndex=$currentVerseIndex; lastIndex=${memverses.lastIndex}")
         if (currentVerseIndex == memverses.lastIndex) {
             button_next.visibility = View.INVISIBLE
@@ -505,6 +551,8 @@ class MainActivity : AppCompatActivity() {
         }
     } catch (e: Exception) {
         // TODO: Log to analytics so we know how often?
+        Crashlytics.log("in update Veres UI")
+        Crashlytics.logException(e)
         showNoVersesToast()
     }
 
@@ -603,6 +651,7 @@ class MainActivity : AppCompatActivity() {
     private var numFetchErrorsInARow = 0
     private fun onFetchNetworkError() {
         numFetchErrorsInARow++
+        Crashlytics.setInt("numFetchErrorsInARow", numFetchErrorsInARow)
         showNetworkErrorToast()
         if (numFetchErrorsInARow < 3) {
             trackFetchRetry()
