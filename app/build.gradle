@@ -10,12 +10,12 @@ android {
     // todo: switch to android p, androidx, Android Studio 3.2
     // navigation controller, etc.
     // https://material.io/develop/android/docs/getting-started/
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         // TODO: Make debug have debug suffix so can install both on phone at the same timee
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 21
-        targetSdkVersion 28 //25-sep-2018 for mandatory nov 2018 upgrade.
+        targetSdkVersion 29 //25-sep-2018 for mandatory nov 2018 upgrade.
         versionCode 92
         // 70=0.37 = beta version; 73= version = 0.38 regular
         // 74 = 0.39 dev ; 75 = 0.39
@@ -103,7 +103,7 @@ dependencies {
     implementation "com.orhanobut:hawk:2.0.1"
 
     //doorbell.io for easy, free/freeish user feedback
-    implementation 'io.doorbell:android-sdk:0.2.8@aar'
+    implementation 'io.doorbell:android-sdk:0.3.1@aar'
 
     implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-experimental-adapter:1.0.0'
 

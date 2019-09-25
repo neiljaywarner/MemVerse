@@ -235,6 +235,7 @@ class MainActivity : AppCompatActivity() {
 
         val email = Prefs.getFromPrefs(applicationContext, Prefs.EMAIL, "")
         doorbellDialog.setEmail(email)
+        doorbellDialog.enableNPSRatings()
         doorbellDialog.addProperty("loggedIn", true) // Optionally add some properties
 
 
