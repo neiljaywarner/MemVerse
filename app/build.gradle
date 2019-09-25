@@ -12,6 +12,7 @@ android {
     // https://material.io/develop/android/docs/getting-started/
     compileSdkVersion 28
     defaultConfig {
+        // TODO: Make debug have debug suffix so can install both on phone at the same timee
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 21
         targetSdkVersion 28 //25-sep-2018 for mandatory nov 2018 upgrade.
@@ -54,11 +55,11 @@ android {
         it.buildConfigField 'String', 'DOORBELL_IO_API_KEY', DoorBellIoApiKey
 
 
-        it.buildConfigField 'String', 'NJW_MV_SMALL_ACCOUNT_ID', MemverseSmallAccountUserId
-        it.buildConfigField 'String', 'NJW_MV_SMALL_ACCOUNT_PW', MemverseSmallAccountUserPassword
+        //it.buildConfigField 'String', 'NJW_MV_SMALL_ACCOUNT_ID', MemverseSmallAccountUserId
+        //it.buildConfigField 'String', 'NJW_MV_SMALL_ACCOUNT_PW', MemverseSmallAccountUserPassword
 
-        it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_ID', MemverseLargeAccountUserId
-        it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_PW', MemverseLargeAccountPassword
+        //it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_ID', MemverseLargeAccountUserId
+       // it.buildConfigField 'String', 'NJW_MV_LARGE_ACCOUNT_PW', MemverseLargeAccountPassword
 
         //TODO: Note: IN production these would probably be configured to use Jenkins
         // but in this case these should match fields in ~/.gradle/gradle.properties

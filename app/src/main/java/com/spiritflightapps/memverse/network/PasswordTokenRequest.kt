@@ -10,7 +10,10 @@ data class PasswordTokenRequest(
         val client_id: String = BuildConfig.NJW_MV_API_KEY
 
 )
-
+// TODO: replace this with mocking via mockwebserver
+/*
 fun getSmallAccountPasswordTokenRequest() =
         PasswordTokenRequest(username = BuildConfig.NJW_MV_SMALL_ACCOUNT_ID,
                 password = BuildConfig.NJW_MV_SMALL_ACCOUNT_PW)
+
+ */
