@@ -16,7 +16,12 @@ android {
         applicationId "com.spiritflightapps.memverse"
         minSdkVersion 21
         targetSdkVersion 29 //25-sep-2018 for mandatory nov 2018 upgrade.
-        versionCode 92
+        versionCode 920
+
+
+        //***** 2019 notes start
+        // 920 - 0.57 = doorbell.io upgrade and 2019 dustoff and target api 29
+        // **************** 2019 notes end
         // 70=0.37 = beta version; 73= version = 0.38 regular
         // 74 = 0.39 dev ; 75 = 0.39
         // 77 = 0.40 8-sep 2018 with add feature and 1-5 explanation
@@ -26,7 +31,7 @@ android {
         // -----> erlease
         //0.52
         // 0.53-bugfix, loyal helped me discover
-        versionName "0.55"
+        versionName "0.57"
         multiDexEnabled true
 
 
