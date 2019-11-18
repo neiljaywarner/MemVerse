@@ -53,6 +53,9 @@
         </activity>
         <activity android:name=".ui.SignupActivity" />
 
+        <activity android:name=".ui.VerseListActivity" />
+
+
         <!--
         TODO: create a service that extends firebase messaging service
         to receive messages in the foreground which is pretty handy

@@ -8,12 +8,17 @@
         android:title="@string/share"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/menu_verse_list"
+        android:icon="@drawable/ic_list_black_24dp"
+        android:title="@string/list"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_verse_add"
         android:icon="@drawable/ic_add"
         android:title="@string/add"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_verse_delete"

@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
@@ -176,10 +177,16 @@ class MainActivity : AppCompatActivity() {
                 showFeedbackDialog()
             }
             R.id.menu_verse_add -> onAddMenuOptionSelected()
+            R.id.menu_verse_list -> onMenuVerseListOptionSelected()
             R.id.menu_verse_delete -> onDeleteMenuOptionSelected()
             else -> returnValue = super.onOptionsItemSelected(item)
         }
         return returnValue
+    }
+
+    private fun onMenuVerseListOptionSelected() {
+        mFirebaseAnalytics.logEvent("ver", Bundle())
+        startActivity<VerseListActivity>()
     }
 
     private fun onDeleteMenuOptionSelected() {
