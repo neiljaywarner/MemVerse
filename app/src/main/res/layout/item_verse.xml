@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/text_margin_vertical"
+    android:layout_marginBottom="@dimen/text_margin_vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
+
+    <!-- TODO: USE abbreviation to save space on mobile
+     possibly list whole text and color code for status-->
+    <TextView
+        tools:text="1 Pet 5:7"
+        android:id="@+id/text_verse_ref"
+        style="@style/textCell" />
+
+    <!-- learning, pending, memorized -->
+    <TextView
+        tools:text="Learning"
+        android:id="@+id/text_status"
+        style="@style/textCell" />
+
+    <TextView
+    tools:text="2019-11-19"
+    android:id="@+id/text_next_test_date"
+        style="@style/textCell" />
+
+    <!-- might not need internval if it shows from - to .. think about what we would atually want there -->
+
+</LinearLayout>

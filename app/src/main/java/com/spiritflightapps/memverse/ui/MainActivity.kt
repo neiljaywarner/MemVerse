@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.orhanobut.hawk.Hawk
 import com.spiritflightapps.memverse.BuildConfig
+import com.spiritflightapps.memverse.CurrentUser
 import com.spiritflightapps.memverse.R
 import com.spiritflightapps.memverse.model.Memverse
 import com.spiritflightapps.memverse.model.MemverseResponse
@@ -586,6 +587,8 @@ class MainActivity : AppCompatActivity() {
                         Log.e(TAG, "memverse network response is null")
                         Crashlytics.logException(Exception("Memverse Fetch response is null"))
                     } else {
+                        // TODO: FIXME!!!
+                        CurrentUser.memverses = myVersesResponse.verses.toMutableList()
                         updateUi(myVersesResponse)
                     }
                 } else {

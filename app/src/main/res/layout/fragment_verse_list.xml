@@ -10,4 +10,4 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.spiritflightapps.memverse.ui.VerseListFragment"
-    tools:listitem="@layout/fragment_verse" />
+    tools:listitem="@layout/item_verse" />

@@ -4,42 +4,34 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.spiritflightapps.memverse.R
+import com.spiritflightapps.memverse.model.Memverse
 
 
-import com.spiritflightapps.memverse.ui.dummy.DummyContent.DummyItem
 
-import kotlinx.android.synthetic.main.fragment_verse.view.*
+import kotlinx.android.synthetic.main.item_verse.view.*
 
-class MyVerseRecylerAdapter(
-        private val mValues: List<DummyItem> )
+class MyVerseRecylerAdapter(private val verses: List<Memverse> )
     : RecyclerView.Adapter<MyVerseRecylerAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_verse, parent, false)
+                .inflate(R.layout.item_verse, parent, false)
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = mValues[position]
-        holder.mIdView.text = item.id
-        holder.mContentView.text = item.content
+    // https://antonioleiva.com/recyclerview-adapter-kotlin/
+    // todo: Change to databinding
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(verses[position])
 
-        with(holder.mView) {
-            tag = item
-        }
-    }
+    override fun getItemCount(): Int = verses.size
 
-    override fun getItemCount(): Int = mValues.size
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bind(verse: Memverse) = with(itemView) {
+            text_verse_ref.text = verse.ref
+            text_next_test_date.text = verse.next_test
+            text_status.text = verse.status
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mIdView: TextView = mView.item_number
-        val mContentView: TextView = mView.content
-
-        override fun toString(): String {
-            return super.toString() + " '" + mContentView.text + "'"
         }
     }
 }

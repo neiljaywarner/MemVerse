@@ -10,7 +10,7 @@ data class MemverseResponse(val count: Int = 0,
                             @SerializedName("response")
                             val verses: List<Memverse>)
 
-
+// todo; unit test and mke a comparator or something
 data class Memverse(val id: String = "",
 
                     @SerializedName("verse")
